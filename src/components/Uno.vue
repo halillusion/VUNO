@@ -221,7 +221,7 @@ export default {
         }
           
         // Draw table card
-        this.cardsPlayed.push('joker:color') // this.cardsPlayed.push(this.drawCard())
+        this.cardsPlayed.push(this.drawCard())
         await this.pleaseWait(500)
         resolve()
       })
