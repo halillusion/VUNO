@@ -19,14 +19,14 @@ export default {
       colors: ['blue', 'green', 'red', 'yellow'],
       color: '',
       colorModal: null,
-      pickColorNext: false,
+      selectedColor: null,
     }
   },
   components: {
     Header
   },
   methods: {
-    startGame() {
+    async startGame() {
 
       this.numberOfPlayer = parseInt(this.numberOfPlayer)
       if (this.playerName == '') {
@@ -50,65 +50,157 @@ export default {
           }
         }
 
-        new Promise((resolve, reject) => {
-          resolve(this.prepareOrderRelation())
-        }).then(() => {
-          return new Promise((resolve, reject) => {
-            resolve(this.getCards())
-          })
-        }).then(() => {
-          return new Promise((resolve, reject) => {
-            resolve(this.shuffleCards())
-          })
-        }).then(() => {
-          return new Promise(async (resolve, reject) => {
-            await new Promise(resolve => setTimeout(() => resolve(this.preparingSecond--), 1000))
-            await new Promise(resolve => setTimeout(() => resolve(this.preparingSecond--), 1000))
-            await new Promise(resolve => setTimeout(() => resolve(this.preparingSecond--), 1000))
-            resolve()
-          })
-        }).then(() => {
-          return new Promise(async (resolve, reject) => {
-            this.screen = 'game'
-            await this.dealCards()
-            resolve()
-          })
-        }).then(() => {
-          return new Promise(async (resolve, reject) => {
-            await this.setOrder()
-            resolve()
-          })
-        }).then(() => {
-          if (this.order !== 'bottom') {
-            this.playingMachine()
-          } else {
-            console.log("Me!")
-          }
+        await this.prepareOrderRelation()
+        await this.getCards()
+        await this.shuffleCards()
+        await new Promise(async (resolve) => {
+          const COUNT_DOWN = setInterval(() => {
+            this.preparingSecond--
+            if (this.preparingSecond <= 0) {
+              clearInterval(COUNT_DOWN)
+              resolve()
+            }
+          }, 1000)
         })
+        await new Promise(async (resolve) => {
+          this.screen = 'game'
+          this.triggergameArea()
+          await this.dealCards()
+          resolve()
+        })
+        await new Promise(async (resolve) => {
+          await this.setOrder()
+          resolve()
+        })
+
+        if (this.order !== 'bottom') {
+          console.log("Machine!")
+          this.afterMove(true)
+          this.playingMachine()
+        } else {
+          this.afterMove(true)
+        }
       }
     },
-    playingMachine() {
-      setTimeout(() => {
-        let currentCard = this.cardsPlayed[this.cardsPlayed.length - 1].split(':')
-        let availableCards = []
-        let myCards = this.getMyCards()
-        myCards.forEach((element, key) => {
-          let elSplitted = element.split(':')
-          if (elSplitted[0] === 'joker' || elSplitted[0] === this.color) {
-            availableCards.push(key) // this.getCardPoint(element) -> maybe we 'ill use in future for hard mode
-          }
-        });
-        if (availableCards.length) {
-          const randKey = availableCards[Math.floor(Math.random()*availableCards.length)]
-          const cardName = this.playerData[this.orderRelation[this.order]].cards[randKey]
-          this.playerData[this.orderRelation[this.order]].cards.splice(randKey, 1)
-          this.cardsPlayed.push(cardName)
-        } else {
-          
+    /* Get Next User */
+    nextUser(from = null) {
+      if (from === null) {
+        from = this.order
+      }
+      const DIRECTIONS = {
+        left:  ['bottom', 'left', 'top', 'right'],
+        right: ['bottom', 'right', 'top', 'left']
+      }
+      Object.entries(this.orderRelation).forEach(el => {
+        if (el[1] === null) {
+          DIRECTIONS.left.splice(DIRECTIONS.left.indexOf(el[0]), 1)
+          DIRECTIONS.right.splice(DIRECTIONS.right.indexOf(el[0]), 1)
         }
-        
-        // this.calculateMove(cardName)
-      }, 1000)
+      })
+
+      const CURRENT_INDEX = DIRECTIONS[this.direction].indexOf(from)
+      let nextIndex;
+      if ((CURRENT_INDEX+1) > (DIRECTIONS[this.direction].length-1)) {
+        nextIndex = 0
+      } else {
+        nextIndex = (CURRENT_INDEX+1)
+      }
+      return DIRECTIONS[this.direction][nextIndex]
+    },
+    async afterMove(firstMove = false) {
+
+      let currentCard = this.cardsPlayed[this.cardsPlayed.length - 1]
+      let nextUser = this.nextUser()
+      if (firstMove) {
+        // If first card is a joker
+        if (currentCard.search("joker") !== -1) {
+          if (currentCard === 'joker:+4') {
+            nextUser = this.nextUser(nextUser) // skip 1 more user
+            for (let index = 0; index < 4; index++) {
+              await new Promise((resolve) => {
+                setTimeout(() => {
+                  this.playerData[this.orderRelation[nextUser]].cards.push(this.drawCard())
+                  resolve()
+                }, 200)
+              })
+            }
+          }
+          // pick start color
+          if (this.order !== 'bottom') {
+            await new Promise((resolve) => {
+              setTimeout(() => {
+                this.color = this.selectMyColor()
+                resolve()
+              }, 1000)
+            })
+          } else {
+            this.colorModal.show()
+            await new Promise((resolve) => {
+              const COLOR_PICK_INTERVAL = setInterval(() => {
+                if (this.selectedColor !== null) {
+                  this.color = this.selectedColor
+                  this.selectedColor = null
+                  this.colorModal.hide()
+                  cleatInterval(COLOR_PICK_INTERVAL)
+                  resolve()
+                }
+              }, 200)
+            })
+          }
+          this.order = nextUser
+        } else {
+          currentCard = currentCard.split(":")
+          // pick start color
+          this.color = currentCard[0]
+            if (['+2', 'block', 'direction'].indexOf(currentCard[1])) {
+              if (currentCard[1] === '+2') {
+              nextUser = this.nextUser(nextUser) // skip 1 more user
+            } else if (currentCard[1] === 'block') {
+              nextUser = this.nextUser(nextUser) // skip 1 more user
+            } else {
+              this.switchDirection()
+              nextUser = this.nextUser() // assign again
+            }
+            this.order = nextUser
+          }
+        }
+      } else {
+        if (this.order !== 'bottom') {
+          this.playingMachine()
+        }
+      }
+    },
+    switchDirection() {
+      this.direction = this.direction === 'left' ? 'right' : 'left'
+    },
+    pickColor(color = null) {
+      this.selectedColor = color
+    },
+    async playingMachine() {
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          let currentCard = this.cardsPlayed[this.cardsPlayed.length - 1].split(':')
+          let availableCards = []
+          let myCards = this.getMyCards()
+          myCards.forEach((element, key) => {
+            let elSplitted = element.split(':')
+            if (elSplitted[0] === 'joker' || elSplitted[0] === this.color) {
+              availableCards.push(key) // this.getCardPoint(element) -> maybe we 'ill use in future for hard mode
+            }
+          });
+          if (availableCards.length) {
+            const randKey = availableCards[Math.floor(Math.random()*availableCards.length)]
+            const cardName = this.playerData[this.orderRelation[this.order]].cards[randKey]
+            this.playerData[this.orderRelation[this.order]].cards.splice(randKey, 1)
+            this.cardsPlayed.push(cardName)
+          } else {
+            // draw a card
+          }
+          
+          this.afterMove()
+          resolve()
+        }, 1000)
+      })
     },
     getMyCards() {
       return Array.from(this.playerData[this.orderRelation[this.order]].cards)
@@ -117,17 +209,21 @@ export default {
      * Deal Shuffle Cards
      */
     dealCards() {
-      return new Promise((resolve, reject) => {
-        Object.entries(this.playerData).forEach(async el => {
-          for (let card = 0; card < 7; card++) {
-            await this.pleaseWait(500);
-            el[1].cards.push(this.drawCard())
+      return new Promise(async (resolve) => {
+        const PLAYER_DATA = Object.entries(this.playerData)
+        // Draw player cards
+        for (let card = 0; card < 7; card++) {
+          for (let playerIndex = 0; playerIndex < PLAYER_DATA.length; playerIndex++) {
+            PLAYER_DATA[playerIndex][1].cards.push(this.drawCard())
+            await this.pleaseWait(250)
           }
-        })
-        this.cardsPlayed.push(this.drawCard())
-        setTimeout(() => {
-          resolve()
-        }, (500*7))
+          await this.pleaseWait(250)
+        }
+          
+        // Draw table card
+        this.cardsPlayed.push('joker:color') // this.cardsPlayed.push(this.drawCard())
+        await this.pleaseWait(500)
+        resolve()
       })
     },
     /**
@@ -212,6 +308,30 @@ export default {
         resolve()
       })
     },
+    selectMyColor() {
+
+      const myCards = this.getMyCards()
+      const colors = {
+        red: 0,
+        blue: 0,
+        green: 0,
+        yellow: 0
+      }
+      myCards.forEach((element) => {
+        if (element.includes("red")) {
+          colors.red+= this.getCardPoint(element)
+        } else if (element.includes("blue")) {
+          colors.blue+= this.getCardPoint(element)
+        } else if (element.includes("green")) {
+          colors.green+= this.getCardPoint(element)
+        } else if (element.includes("yellow"))  {
+          colors.yellow+= this.getCardPoint(element)
+        }
+      })
+      return Object.keys(colors).reduce((a, b) => colors[a] > colors[b] ? a : b)
+
+    },
+    /*
     async play(cardName, first = false) {
 
       let index = null
@@ -244,46 +364,11 @@ export default {
           this.computerPlaying()
         }
       }
-
-     
     },
-    pickColor(color = null) {
-      if (color) {
-        this.colorModal.hide()
-        this.color = color
-      } else {
-        this.colorModal.show()
-      }
-    },
+    */
     /**
      *  Get Current Player's Cards
      */
-
-    
-    selectMyColor() {
-
-      const myCards = this.getMyCards()
-      const colors = {
-        red: 0,
-        blue: 0,
-        green: 0,
-        yellow: 0
-      }
-      myCards.forEach((element) => {
-        if (element.includes("red")) {
-          colors.red+= this.getCardPoint(element)
-        } else if (element.includes("blue")) {
-          colors.blue+= this.getCardPoint(element)
-        } else if (element.includes("green")) {
-          colors.green+= this.getCardPoint(element)
-        } else if (element.includes("yellow"))  {
-          colors.yellow+= this.getCardPoint(element)
-        }
-      })
-
-      return Object.keys(colors).reduce((a, b) => colors[a] > colors[b] ? a : b)
-
-    },
     getCardPoint(cardName) {
       let point = 0
       cardName = cardName.split(':')
@@ -296,18 +381,17 @@ export default {
       }
       return point
     },
-    calculateMove(cardName) {
-
-      console.log("calculate" + cardName)
-    },
+    /*
     drawACard() {
       if (this.order == 'bottom') {
         this.playerData[0].cards.push(this.drawCard())
       }
     },
+    */
     pleaseWait (ms = 1000) {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
+    /*
     async renderGame() {
       await this.wait(2000)
       this.screen = 'game'
@@ -328,6 +412,7 @@ export default {
       }, 500)
       
     },
+    */
     triggergameArea() {
       setTimeout(() => {
         let tooltips = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(function (tooltipTriggerEl) {
@@ -475,7 +560,7 @@ export default {
               <span class="name" @click="playerData[orderRelation.bottom].cards.shift()">{{ playerData[orderRelation.bottom].name }}</span>
               <span class="action-buttons">
                 <button class="active" @click="playerData[orderRelation.bottom].cards.push('yellow:1')">PAS</button>
-                <button class="active" @click="playerData[orderRelation.top].cards.push('yellow:1')">UNO</button>
+                <button class="active" @click="nextUser()">UNO</button>
               </span>
             </div>
             <div class="cards">

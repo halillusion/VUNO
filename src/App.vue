@@ -274,7 +274,6 @@ html {
       width: 100vw;
       height: 100vh;
       position: relative;
-      transition: $transition;
 
       .start-screen {
         transition: $transition;
@@ -355,7 +354,7 @@ html {
             background: rgb(255, 255, 255);
             box-shadow: 0 0 0.4rem #092522;
             display: block;
-            transition: 0.2s ease-out;
+            transition: 0.1s ease-out;
             border-radius: 0.5rem;
             border: 2px solid #fff;
             position: relative;
