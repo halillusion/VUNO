@@ -99,6 +99,18 @@ $transition: 0.2s ease-out;
   }
 }
 
+@keyframes boxShadow { 
+  0% { 
+    box-shadow: 0 0 0rem #fff;
+  }
+  50% { 
+    box-shadow: 0 0 4rem #fff;
+  }
+  100% { 
+    box-shadow: 0 0 0rem #fff;
+  }
+}
+
 html {
   // Main Template
   body {
@@ -532,12 +544,14 @@ html {
             }
 
             &.direction-left {
+              animation: 0.2s boxShadow;
               &:before {
                 animation: spinLeft 15s linear infinite;
               }
             }
 
             &.direction-right {
+              animation: 0.2s boxShadow;
               &:before {
                 animation: spinRight 15s linear infinite;
               }
