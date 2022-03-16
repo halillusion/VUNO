@@ -55,6 +55,8 @@ export default {
           }
         }
 
+        console.log("Game starting...")
+
         await this.prepareOrderRelation()
         await this.prepareCards()
         await this.shuffleCards()
@@ -393,6 +395,8 @@ export default {
      * Prepare Order Relation
      */
     prepareOrderRelation() {
+      /* TEMP */
+      return new Promise()
       switch (parseInt(this.numberOfPlayer)) {
         case 4:
           this.orderRelation = {
