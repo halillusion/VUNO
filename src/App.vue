@@ -135,6 +135,7 @@ html {
       color: $main-color;
       ~ label {
         color: $accent-color;
+        font-size: 0.8rem;
       }
       &:focus {
         background: $accent-color;
@@ -145,10 +146,14 @@ html {
       
     }
     .navbar {
-      background: $accent-color;
+      background: $main-color;
+      color: $accent-color;
+
       &.focus-game {
         top: -3rem;
         transition: 0.2s ease-out 0.2s;
+        opacity: 0.5;
+        
         &:hover {
           opacity: 1;
           top: 0rem;
@@ -175,7 +180,7 @@ html {
             color: $accent-color-dark;
             font-size: 0.8rem;
             &:hover, &:focus, &.active {
-              color: $main-color;
+              color: $accent-color;
             }
           }
         }
@@ -350,6 +355,7 @@ html {
             animation: textShadow 1s infinite ;
             z-index: 3;
             background: rgba($main-color, 0.8);
+            color: $accent-color;
           }
         }
 
@@ -363,7 +369,7 @@ html {
           .game-card {
             height: 8rem;
             width: 5rem;
-            background: rgb(255, 255, 255);
+            background: rgb(0, 0, 0);
             box-shadow: 0 0 0.4rem #092522;
             display: block;
             transition: 0.1s ease-out;
@@ -652,7 +658,6 @@ html {
             }
           }
           .player-side {
-            opacity: 0.5;
             transition: 0.2s ease-out;
             pointer-events: none;
             width: 100%;
@@ -684,6 +689,7 @@ html {
 
               .name {
                 margin: 0 2rem;
+                color: $accent-color;
               }
 
               .action-buttons {
@@ -693,11 +699,10 @@ html {
                   color: $accent-color-dark;
                   font-family: $font-primary;
                   font-size: 0.8rem;
-                  opacity: 0.5;
                   pointer-events: none;
                   &.active {
-                    pointer-events: all;
-                    opacity: 1;
+                    color: #fff;
+                    text-shadow: 0 0 0.4rem rgba(255,255,255,0.4);
                   }
                   &:hover {
                     color: $accent-color;
@@ -711,6 +716,12 @@ html {
             &.bottom {
               .player-side {
                 pointer-events: all;
+                
+                .action-buttons {
+                  button {
+                    pointer-events: all;
+                  }
+                }
               }
             }
             .player-side {
@@ -752,80 +763,15 @@ html {
         }
       }
     }
-
-    .wrap {
-      position: relative;
-      .wrap--game {
-        margin-top: 3.4rem;
-        margin-bottom: 0;
-        height: calc(100vh - 3.4rem);
-        width: 100vw;
-        overflow: hidden;
-
-        .wrap--game-counter {
-          overflow: hidden;
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          opacity: 0;
-          pointer-events: none;
-
-          &.active {
-            pointer-events: all;
-            opacity: 1;
-          }
-
-          .count {
-            display: flex;
-            flex-direction: column;
-            flex-wrap: nowrap;
-            align-content: center;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-            animation: textShadow 1s infinite 
-          }
-        }
-      }
-    }
   }
   // Dark Theme
+  /*
   &[data-theme=dark] {
     body {
-      background: $main-color-dark;
-      color: $accent-color;
-      .form-control,
-      .form-select {
-        border-color: $accent-color;
-        color: #fff;
-        &:focus {
-          color: $main-color-dark;
-        }
-        ~ label {
-          font-size: 0.8rem;
-        }
-      }
-      .navbar {
-        background: $main-color;
-        .navbar-toggler {
-          color: $accent-color;
-        }
-        .navbar-nav {
-          .nav-item {
-            .nav-link {
-              color: $accent-color-dark;
-              font-size: 0.8rem;
-              &:hover, &:focus, &.active {
-                color: $accent-color;
-              }
-            }
-          }
-        }
-      }
+      user-select: all;
     }
   }
+  */
   // First Load
   &[data-theme=loading] {
     body {

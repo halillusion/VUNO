@@ -24,6 +24,24 @@ export default {
       drawnCard: null,
       rightToPass: null,
       tempFirstCard: null,
+      playerActions: {
+        top: {
+          pass: false,
+          uno: false
+        },
+        right: {
+          pass: false,
+          uno: false
+        },
+        bottom: {
+          pass: false,
+          uno: false
+        },
+        left: {
+          pass: false,
+          uno: false
+        }
+      }
     }
   },
   components: {
@@ -63,21 +81,22 @@ export default {
         await new Promise(async (resolve) => {
           const COUNT_DOWN = setInterval(() => {
             this.preparingSecond--
+            console.log("Countdown: " + this.preparingSecond)
             if (this.preparingSecond <= 0) {
               clearInterval(COUNT_DOWN)
-              resolve()
+              resolve(console.log("Start"))
             }
           }, 1000)
         })
         await new Promise(async (resolve) => {
           this.screen = 'game'
-          this.triggergameArea()
+          await this.triggergameArea()
           await this.dealCards()
-          resolve()
+          resolve(console.log("Visible game display..."))
         })
         await new Promise(async (resolve) => {
           await this.setOrder()
-          resolve()
+          resolve(console.log("Like everything is ready..."))
         })
         this.firstMove()
       }
@@ -95,7 +114,7 @@ export default {
           await new Promise((resolve) => {
             setTimeout(() => {
               this.color = this.selectMyColor()
-              resolve()
+              resolve(console.log("Machine chose color: " + this.color))
             }, 1000)
           })
         } else {
@@ -107,7 +126,7 @@ export default {
                 this.selectedColor = null
                 this.colorModal.hide()
                 clearInterval(COLOR_PICK_INTERVAL)
-                resolve()
+                resolve(console.log("Human chose color: " + this.color))
               }
             }, 200)
           })
@@ -120,9 +139,9 @@ export default {
                 this.playerData[this.orderRelation[nextUser]].cards.push(this.drawCard())
                 await this.pleaseWait(200)
               }
-              resolve()
+              resolve(console.log("Joker +4 draw to " + nextUser))
             })
-            resolve()
+            resolve(console.log("Joker +4"))
           })
           nextUser = this.nextUser(nextUser)
         }
@@ -140,20 +159,21 @@ export default {
                   this.playerData[this.orderRelation[nextUser]].cards.push(this.drawCard())
                   await this.pleaseWait(200)
                 }
-                resolve()
+                resolve(console.log(this.color + " +2 draw to " + nextUser))
               })
-              resolve()
+              resolve(console.log(this.color + " +2"))
             })
             nextUser = this.nextUser(nextUser) // skip 1 more user
           } else if (currentCard[1] === 'block') { // block next user and skip
             await new Promise(async (resolve) => { // we will add block animation
               this.order = nextUser
               await this.pleaseWait(500);
-              resolve()
+              resolve(console.log(this.order + " blocked."))
             })
             nextUser = this.nextUser(nextUser) // skip 1 more user
           } else { // switch direction and skip
             this.switchDirection()
+            console.log("direction switched")
             nextUser = this.nextUser() // assign again
           }
           this.order = nextUser
@@ -164,38 +184,44 @@ export default {
     },
     /* Playing circle */
     async play() {
+
+      const ORDER = this.order
+      console.log("Playing...")
+
       this.drawnCard = null
       this.rightToPass = null
       let currentCard = this.cardsPlayed[this.cardsPlayed.length - 1].split(':')
-      if (this.order === 'bottom') { // Human
-
+      if (ORDER === 'bottom') { // Human
+        console.log("Human playing...")
         await new Promise(async (resolve) => {
           const CARD_PICK_INTERVAL = setInterval(async () => {
             if (this.selectedCard !== null) {
               const SELECTED_CARD = this.selectedCard[0]
               const SELECTED_CARD_KEY = this.selectedCard[1]
               const SELECTED_CARD_SPLITTED = SELECTED_CARD.split(':')
+              console.log("Human's selected card: " + SELECTED_CARD)
               this.selectedCard = null
-              
+              console.log(SELECTED_CARD_SPLITTED[1], currentCard[1])
               if (SELECTED_CARD_SPLITTED[0] === 'joker' || SELECTED_CARD_SPLITTED[0] === this.color || SELECTED_CARD_SPLITTED[1] === currentCard[1]) {
+                console.log("Human's selected card is available: " + SELECTED_CARD)
                 clearInterval(CARD_PICK_INTERVAL)
-                this.playerData[this.orderRelation[this.order]].cards.splice(SELECTED_CARD_KEY, 1)
+                this.playerData[this.orderRelation[ORDER]].cards.splice(SELECTED_CARD_KEY, 1)
                 this.cardsPlayed.push(SELECTED_CARD)
                 await this.calculateTheMove()
-                resolve()
+                resolve(console.log("Move calculated"))
               }
             } else if (this.rightToPass !== null) {
               this.order = this.nextUser()
-              resolve()
+              clearInterval(CARD_PICK_INTERVAL)
+              resolve(console.log("Human's used right to pass"))
             }
           }, 50)
         })
 
         this.play()
-        console.log("We are waiting...")
 
       } else { // Machine
-
+        console.log("Machine playing... - " + ORDER)
         await new Promise(async (resolve) => {
           let availableCards = []
           let myCards = this.getMyCards()
@@ -208,32 +234,59 @@ export default {
 
           if (availableCards.length) { // has a playable card
 
-            await this.pleaseWait(1000)
+            await this.pleaseWait(2000)
             const RAND_KEY = availableCards[Math.floor(Math.random()*availableCards.length)]
-            const CARD_NAME = this.playerData[this.orderRelation[this.order]].cards[RAND_KEY]
-            this.playerData[this.orderRelation[this.order]].cards.splice(RAND_KEY, 1)
+            const CARD_NAME = this.playerData[this.orderRelation[ORDER]].cards[RAND_KEY]
+            this.playerData[this.orderRelation[ORDER]].cards.splice(RAND_KEY, 1)
             this.cardsPlayed.push(CARD_NAME)
+            console.log("Machine's card is available: " + CARD_NAME)
             await this.calculateTheMove()
 
-          } else { // has'nt a playable card
+          } else { // hasn't a playable card
             
-            await this.pleaseWait(1000)
+            await this.pleaseWait(2500)
             const DRAW_CARD = this.drawCard()
             this.playerData[this.orderRelation[this.order]].cards.push(DRAW_CARD)
             let splittedDrawCard = DRAW_CARD.split(':')
             if (splittedDrawCard[0] === 'joker' || splittedDrawCard[0] === this.color || splittedDrawCard[1] === currentCard[1]) {
               this.cardsPlayed.push(DRAW_CARD)
+              let machineCard = this.playerData[this.orderRelation[ORDER]].cards
+              this.playerData[this.orderRelation[ORDER]].cards.splice(machineCard.indexOf(DRAW_CARD), 1)
+              console.log("Machine's pass card is available: " + DRAW_CARD)
               await this.calculateTheMove()
             } else {
-              await this.pleaseWait(1000)
+              await this.pleaseWait(1500)
+              console.log("Machine's pass to right")
               this.pass()
             }
+          }
+          if (this.playerData[this.orderRelation[ORDER]].cards.length === 1) {
+            await this.uno(ORDER);
           }
           resolve()
         })
 
         this.play()
       }
+    },
+    uno (playerOrder) {
+      return new Promise((resolve) => {
+        if (playerOrder === 'bottom') {
+          
+        } else {
+          const RAND = Math.floor((Math.random() * 10) + 1)
+          if ((RAND / 2) % 0) {
+            this.playerActions[playerOrder].uno = true
+          } else {
+            this.playerActions[playerOrder].uno = null
+            this.playerData[this.orderRelation[playerOrder]].cards.push(this.drawCard())
+            this.playerData[this.orderRelation[playerOrder]].cards.push(this.drawCard())
+            setTimeout(() => {
+              this.playerActions[playerOrder].uno = false
+            }, 1000)
+          }
+        }
+      })
     },
     async calculateTheMove() {
       return new Promise(async (resolve) => {
@@ -313,11 +366,22 @@ export default {
             this.order = nextUser
           }
         }
+        await this.pleaseWait(500)
         resolve()
       })
     },
     pass() {
-      this.order = this.nextUser()
+      const ORDER = this.order
+      if (ORDER === 'bottom') {
+        this.rightToPass = true
+      } else {
+        this.order = this.nextUser()
+      }
+      this.playerActions[ORDER].pass = true
+      setTimeout(() => {
+        this.playerActions[ORDER].pass = false
+      }, 1500)
+      
     },
     /* Get next user */
     nextUser(from = null) {
@@ -388,7 +452,7 @@ export default {
         // Draw table card
         this.cardsPlayed.push((this.tempFirstCard !== null ? this.tempFirstCard : this.drawCard()))
         await this.pleaseWait(500)
-        resolve()
+        resolve(console.log("Deal cards..."))
       })
     },
     /**
@@ -396,67 +460,73 @@ export default {
      */
     prepareOrderRelation() {
       /* TEMP */
-      return new Promise()
-      switch (parseInt(this.numberOfPlayer)) {
-        case 4:
-          this.orderRelation = {
-            bottom: 0,
-            left: 1,
-            top: 2,
-            right: 3
-          }
-          break
-        case 3:
-          this.orderRelation = {
-            bottom: 0,
-            left: 1,
-            top: null,
-            right: 2
-          }
-          break
-        default:
-          this.orderRelation = {
-            bottom: 0,
-            left: null,
-            top: 1,
-            right: null
-          }
-      }
+      return new Promise((resolve) => {
+         switch (parseInt(this.numberOfPlayer)) {
+          case 4:
+            this.orderRelation = {
+              bottom: 0,
+              left: 1,
+              top: 2,
+              right: 3
+            }
+            break
+          case 3:
+            this.orderRelation = {
+              bottom: 0,
+              left: 1,
+              top: null,
+              right: 2
+            }
+            break
+          default:
+            this.orderRelation = {
+              bottom: 0,
+              left: null,
+              top: 1,
+              right: null
+            }
+        }
+        resolve(console.log("Order relations prepared..."))
+      })
     },
     /**
      * Prepare Cards
      */
     prepareCards() {
-
-      ["red", "yellow", "green", "blue", "joker"].forEach(color => {
-        switch (color) {
-          case "joker":
-            [...Array(4).keys()].forEach(number => {
-              this.cards.push(color + ":+4")
-              this.cards.push(color + ":color")
-            });
-            break;
-        
-          default:
-            [...Array(10).keys()].forEach(number => {
-              if (number) this.cards.push(color + ":" + number)
-              this.cards.push(color + ":" + number)
-            });
-            for (let x = 0; x < 2; x++) {
-              this.cards.push(color + ":block")
-              this.cards.push(color + ":direction")
-              this.cards.push(color + ":+2")
-            }
-            break;
-        }
+      return new Promise((resolve) => {
+        ["red", "yellow", "green", "blue", "joker"].forEach(color => {
+          switch (color) {
+            case "joker":
+              [...Array(4).keys()].forEach(number => {
+                this.cards.push(color + ":+4")
+                this.cards.push(color + ":color")
+              });
+              break;
+          
+            default:
+              [...Array(10).keys()].forEach(number => {
+                if (number) this.cards.push(color + ":" + number)
+                this.cards.push(color + ":" + number)
+              });
+              for (let x = 0; x < 2; x++) {
+                this.cards.push(color + ":block")
+                this.cards.push(color + ":direction")
+                this.cards.push(color + ":+2")
+              }
+              break;
+          }
+        })
+        resolve(console.log("Cards generated..."))
       })
-
     },
     /**
      * Shuffle Generated Cards
      */
     shuffleCards() {
-      this.cards = this.cards.sort(() => Math.random() - 0.5)
+      return new Promise ((resolve) => {
+        this.cards = this.cards.sort(() => Math.random() - 0.5)
+        resolve(console.log("Card shuffle..."))
+      })
     },
     /**
      * Draw a Card
@@ -477,7 +547,7 @@ export default {
         });
         this.order = orders[Math.floor(Math.random()*orders.length)]
         await this.pleaseWait(500)
-        resolve()
+        resolve(console.log("Calculated order..."))
       })
     },
     selectMyColor() {
@@ -522,13 +592,16 @@ export default {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
     triggergameArea() {
-      setTimeout(() => {
-        let tooltips = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(function (tooltipTriggerEl) {
-          return new bootstrap.Tooltip(tooltipTriggerEl)
+      new Promise ((resolve) => {
+        setTimeout(() => {
+          let tooltips = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+          })
+          if (! this.colorModal) {
+            this.colorModal = new bootstrap.Modal(document.getElementById('colorModal'))
+          }
+          resolve(console.log("Game Area DOM triggered..."))
         })
-        if (! this.colorModal) {
-          this.colorModal = new bootstrap.Modal(document.getElementById('colorModal'))
-        }
       })
     }
   },
@@ -600,12 +673,12 @@ export default {
               </span>
               <span class="name">{{ playerData[orderRelation.top].name }}</span>
               <span class="action-buttons">
-                <button>PAS</button>
-                <button>UNO</button>
+                <button :class="playerActions.top.pass && 'active'">PAS</button>
+                <button :class="playerActions.top.uno && 'active'">UNO</button>
               </span>
             </div>
             <div class="cards">
-              <div v-for="(card, key) in getTopCards" :key="key" class="game-card" :data-card-type="card">
+              <div v-for="(card, key) in getTopCards" :key="key" class="game-card rival" :data-card-type="card">
               </div>
             </div>
           </div>
@@ -618,12 +691,12 @@ export default {
               </span>
               <span class="name">{{ playerData[orderRelation.left].name }}</span>
               <span class="action-buttons">
-                <button>PAS</button>
-                <button>UNO</button>
+                <button :class="playerActions.left.pass && 'active'">PAS</button>
+                <button :class="playerActions.left.uno && 'active'">UNO</button>
               </span>
             </div>
             <div class="cards">
-              <div v-for="(card, key) in getLeftCards" :key="key" class="game-card" :data-card-type="card">
+              <div v-for="(card, key) in getLeftCards" :key="key" class="game-card rival" :data-card-type="card">
               </div>
             </div>
           </div>
@@ -649,12 +722,12 @@ export default {
               </span>
               <span class="name">{{ playerData[orderRelation.right].name }}</span>
               <span class="action-buttons">
-                <button>PAS</button>
-                <button>UNO</button>
+                <button :class="playerActions.right.pass && 'active'">PAS</button>
+                <button :class="playerActions.right.uno && 'active'">UNO</button>
               </span>
             </div>
             <div class="cards">
-              <div v-for="(card, key) in getRightCards" :key="key" class="game-card" :data-card-type="card">
+              <div v-for="(card, key) in getRightCards" :key="key" class="game-card rival" :data-card-type="card">
               </div>
             </div>
           </div>
@@ -667,8 +740,8 @@ export default {
               </span>
               <span class="name" @click="playerData[orderRelation.bottom].cards.shift()">{{ playerData[orderRelation.bottom].name }}</span>
               <span class="action-buttons">
-                <button class="active" @click="drawnCard !== null ? rightToPass = true : false">PAS</button>
-                <button class="active" @click="nextUser()">UNO</button>
+                <button :class="playerActions.bottom.pass && 'active'" @click="drawnCard !== null ? pass() : false">PAS</button>
+                <button :class="playerActions.bottom.uno && 'active'" @click="nextUser()">UNO</button>
               </span>
             </div>
             <div class="cards">
