@@ -388,28 +388,28 @@ html {
               margin-left: -3rem;
             }
 
-            &:not(.rival)[data-card-type*="red"] {
+            &:not(.rivall)[data-card-type*="red"] {
               background: $red-color;
               color: #fff;
             }
-            &:not(.rival)[data-card-type*="green"] {
+            &:not(.rivall)[data-card-type*="green"] {
               background: $green-color;
               color: #fff;
             }
-            &:not(.rival)[data-card-type*="blue"] {
+            &:not(.rivall)[data-card-type*="blue"] {
               background: $blue-color;
               color: #fff;
             }
-            &:not(.rival)[data-card-type*="yellow"] {
+            &:not(.rivall)[data-card-type*="yellow"] {
               background: $yellow-color;
               color: #fff;
             }
-            &:not(.rival)[data-card-type*="joker"] {
+            &:not(.rivall)[data-card-type*="joker"] {
               background: #000;
               color: #fff;
             }
 
-            &:not(.rival)[data-card-type] {
+            &:not(.rivall)[data-card-type] {
               &:before {
                 pointer-events: none;
                 position: absolute;
@@ -434,7 +434,7 @@ html {
               }
             }
 
-            &:not(.rival)[data-card-type*=":block"] {
+            &:not(.rivall)[data-card-type*=":block"] {
               &:before {
                 left: 0.1rem;
                 top: 0rem;
@@ -448,7 +448,7 @@ html {
               }
             }
 
-            &:not(.rival)[data-card-type*=":direction"] {
+            &:not(.rivall)[data-card-type*=":direction"] {
               &:before {
                 transform: rotate(135deg);
                 left: -0.4rem;
@@ -463,7 +463,7 @@ html {
               }
             }
 
-            &:not(.rival)[data-card-type*=":color"] {
+            &:not(.rivall)[data-card-type*=":color"] {
               &:before {
                 content: '';
                 width: 1.5rem;
@@ -485,7 +485,7 @@ html {
               }
             }
 
-            &:not(.rival)[data-card-type*="+2"] {
+            &:not(.rivall)[data-card-type*="+2"] {
               &:before {
                 content: "+2"
               }
@@ -494,7 +494,7 @@ html {
               }
             }
 
-            &:not(.rival)[data-card-type*="+4"] {
+            &:not(.rivall)[data-card-type*="+4"] {
               &:before {
                 content: "+4"
               }
@@ -504,7 +504,7 @@ html {
             }
 
             @for $i from 0 through 9 {
-                &:not(.rival)[data-card-type*=":#{$i}"] {
+                &:not(.rivall)[data-card-type*=":#{$i}"] {
                 &:before {
                   content: "#{$i}"
                 }

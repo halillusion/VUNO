@@ -80,8 +80,8 @@ export default {
         await this.shuffleCards()
         await new Promise(async (resolve) => {
           const COUNT_DOWN = setInterval(() => {
-            this.preparingSecond--
             console.log("Countdown: " + this.preparingSecond)
+            this.preparingSecond--
             if (this.preparingSecond <= 0) {
               clearInterval(COUNT_DOWN)
               resolve(console.log("Start"))
@@ -98,176 +98,191 @@ export default {
           await this.setOrder()
           resolve(console.log("Like everything is ready..."))
         })
-        this.firstMove()
+        await this.firstMove()
       }
+
+      this.play()
     },
     /* Prepare first move after start */
     async firstMove() {
-      await this.pleaseWait(500);
-      let currentCard = this.cardsPlayed[this.cardsPlayed.length - 1]
-      let nextUser = this.nextUser()
-      // If first card is a joker
-      if (currentCard.search("joker") !== -1) {
+      console.log("first move")
+      return new Promise(async (resolve) => {
+        await this.pleaseWait(500);
+        let currentCard = this.cardsPlayed[this.cardsPlayed.length - 1]
+        let nextUser = this.nextUser()
+        // If first card is a joker
+        if (currentCard.search("joker") !== -1) {
 
-        // pick start color
-        if (this.order !== 'bottom') {
-          await new Promise((resolve) => {
-            setTimeout(() => {
-              this.color = this.selectMyColor()
-              resolve(console.log("Machine chose color: " + this.color))
-            }, 1000)
-          })
-        } else {
-          await new Promise((resolve) => {
-            this.colorModal.show()
-            const COLOR_PICK_INTERVAL = setInterval(() => {
-              if (this.selectedColor !== null) {
-                this.color = this.selectedColor
-                this.selectedColor = null
-                this.colorModal.hide()
-                clearInterval(COLOR_PICK_INTERVAL)
-                resolve(console.log("Human chose color: " + this.color))
-              }
-            }, 200)
-          })
-        }
-
-        if (currentCard === 'joker:+4') {
-          await new Promise(async (resolve) => {
-            await new Promise(async (resolve) => {
-              for (let index = 0; index < 4; index++) {
-                this.playerData[this.orderRelation[nextUser]].cards.push(this.drawCard())
-                await this.pleaseWait(200)
-              }
-              resolve(console.log("Joker +4 draw to " + nextUser))
+          // pick start color
+          if (this.order !== 'bottom') {
+            await new Promise((resolve) => {
+              setTimeout(() => {
+                this.color = this.selectMyColor()
+                resolve(console.log("Machine chose color: " + this.color))
+              }, 1000)
             })
-            resolve(console.log("Joker +4"))
-          })
-          nextUser = this.nextUser(nextUser)
-        }
-        this.order = nextUser
+          } else {
+            await new Promise((resolve) => {
+              this.colorModal.show()
+              const COLOR_PICK_INTERVAL = setInterval(() => {
+                if (this.selectedColor !== null) {
+                  this.color = this.selectedColor
+                  this.selectedColor = null
+                  this.colorModal.hide()
+                  clearInterval(COLOR_PICK_INTERVAL)
+                  resolve(console.log("Human chose color: " + this.color))
+                }
+              }, 200)
+            })
+          }
 
-      } else {
-        currentCard = currentCard.split(":")
-        // pick start color
-        this.color = currentCard[0]
-        if (['+2', 'block', 'direction'].indexOf(currentCard[1]) !== -1) {    
-          if (currentCard[1] === '+2') { // add 2 card to next user and skip
+          if (currentCard === 'joker:+4') {
             await new Promise(async (resolve) => {
               await new Promise(async (resolve) => {
-                for (let index = 0; index < 2; index++) {
+                for (let index = 0; index < 4; index++) {
                   this.playerData[this.orderRelation[nextUser]].cards.push(this.drawCard())
                   await this.pleaseWait(200)
                 }
-                resolve(console.log(this.color + " +2 draw to " + nextUser))
+                resolve(console.log("Joker +4 draw to " + nextUser))
               })
-              resolve(console.log(this.color + " +2"))
+              resolve(console.log("Joker +4"))
             })
-            nextUser = this.nextUser(nextUser) // skip 1 more user
-          } else if (currentCard[1] === 'block') { // block next user and skip
-            await new Promise(async (resolve) => { // we will add block animation
-              this.order = nextUser
-              await this.pleaseWait(500);
-              resolve(console.log(this.order + " blocked."))
-            })
-            nextUser = this.nextUser(nextUser) // skip 1 more user
-          } else { // switch direction and skip
-            this.switchDirection()
-            console.log("direction switched")
-            nextUser = this.nextUser() // assign again
+            nextUser = this.nextUser(nextUser)
           }
           this.order = nextUser
+
+        } else {
+          currentCard = currentCard.split(":")
+          // pick start color
+          this.color = currentCard[0]
+          if (['+2', 'block', 'direction'].indexOf(currentCard[1]) !== -1) {    
+            if (currentCard[1] === '+2') { // add 2 card to next user and skip
+              await new Promise(async (resolve) => {
+                await new Promise(async (resolve) => {
+                  for (let index = 0; index < 2; index++) {
+                    this.playerData[this.orderRelation[nextUser]].cards.push(this.drawCard())
+                    await this.pleaseWait(200)
+                  }
+                  resolve(console.log(this.color + " +2 draw to " + nextUser))
+                })
+                resolve(console.log(this.color + " +2"))
+              })
+              nextUser = this.nextUser(nextUser) // skip 1 more user
+            } else if (currentCard[1] === 'block') { // block next user and skip
+              await new Promise(async (resolve) => { // we will add block animation
+                this.order = nextUser
+                await this.pleaseWait(500);
+                resolve(console.log(this.order + " blocked."))
+              })
+              nextUser = this.nextUser(nextUser) // skip 1 more user
+            } else { // switch direction and skip
+              this.switchDirection()
+              console.log("direction switched")
+              nextUser = this.nextUser() // assign again
+            }
+            this.order = nextUser
+          }
         }
-      }
-      
-      this.play()
+        resolve()
+      })
     },
     /* Playing circle */
     async play() {
-
-      const ORDER = this.order
-      console.log("Playing...")
-
-      this.drawnCard = null
-      this.rightToPass = null
-      let currentCard = this.cardsPlayed[this.cardsPlayed.length - 1].split(':')
-      if (ORDER === 'bottom') { // Human
-        console.log("Human playing...")
-        await new Promise(async (resolve) => {
-          const CARD_PICK_INTERVAL = setInterval(async () => {
-            if (this.selectedCard !== null) {
-              const SELECTED_CARD = this.selectedCard[0]
-              const SELECTED_CARD_KEY = this.selectedCard[1]
-              const SELECTED_CARD_SPLITTED = SELECTED_CARD.split(':')
-              console.log("Human's selected card: " + SELECTED_CARD)
-              this.selectedCard = null
-              console.log(SELECTED_CARD_SPLITTED[1], currentCard[1])
-              if (SELECTED_CARD_SPLITTED[0] === 'joker' || SELECTED_CARD_SPLITTED[0] === this.color || SELECTED_CARD_SPLITTED[1] === currentCard[1]) {
-                console.log("Human's selected card is available: " + SELECTED_CARD)
+      return new Promise (async (resolve) => {
+        const ORDER = this.order
+        console.log("playing " + ORDER)
+        console.log(
+          this.playerData[this.orderRelation[ORDER]].name,
+          this.playerData[this.orderRelation[ORDER]].cards.length
+        )
+        this.drawnCard = null
+        this.rightToPass = null
+        let currentCard = this.cardsPlayed[this.cardsPlayed.length - 1].split(':')
+        if (ORDER === 'bottom') { // Human
+          console.log("Human playing...")
+          await new Promise(async (resolve) => {
+            const CARD_PICK_INTERVAL = setInterval(async () => {
+              if (this.selectedCard !== null) {
+                const SELECTED_CARD = this.selectedCard[0]
+                const SELECTED_CARD_KEY = this.selectedCard[1]
+                const SELECTED_CARD_SPLITTED = SELECTED_CARD.split(':')
+                console.log("Human's selected card: " + SELECTED_CARD)
+                this.selectedCard = null
+                console.log(SELECTED_CARD_SPLITTED[1], currentCard[1])
+                if (SELECTED_CARD_SPLITTED[0] === 'joker' || SELECTED_CARD_SPLITTED[0] === this.color || SELECTED_CARD_SPLITTED[1] === currentCard[1]) {
+                  console.log("Human's selected card is available: " + SELECTED_CARD)
+                  clearInterval(CARD_PICK_INTERVAL)
+                  this.playerData[this.orderRelation[ORDER]].cards.splice(SELECTED_CARD_KEY, 1)
+                  this.cardsPlayed.push(SELECTED_CARD)
+                  await this.calculateTheMove()
+                  resolve(console.log("Move calculated"))
+                }
+              } else if (this.rightToPass !== null) {
+                this.order = this.nextUser()
                 clearInterval(CARD_PICK_INTERVAL)
-                this.playerData[this.orderRelation[ORDER]].cards.splice(SELECTED_CARD_KEY, 1)
-                this.cardsPlayed.push(SELECTED_CARD)
-                await this.calculateTheMove()
-                resolve(console.log("Move calculated"))
+                resolve(console.log("Human's used right to pass"))
               }
-            } else if (this.rightToPass !== null) {
-              this.order = this.nextUser()
-              clearInterval(CARD_PICK_INTERVAL)
-              resolve(console.log("Human's used right to pass"))
-            }
-          }, 50)
-        })
+            }, 50)
+          })
 
-        this.play()
+        } else { // Machine
+          console.log("Machine playing...")
+          await new Promise(async (resolve) => {
+            let availableCards = []
+            let myCards = this.getMyCards()
+            myCards.forEach((element, key) => {
+              let elSplitted = element.split(':')
+              if (elSplitted[0] === 'joker' || elSplitted[0] === this.color || elSplitted[1] === currentCard[1]) {
+                availableCards.push(key) // this.getCardPoint(element) -> maybe we 'ill use in future for hard mode
+              }
+            });
 
-      } else { // Machine
-        console.log("Machine playing... - " + ORDER)
-        await new Promise(async (resolve) => {
-          let availableCards = []
-          let myCards = this.getMyCards()
-          myCards.forEach((element, key) => {
-            let elSplitted = element.split(':')
-            if (elSplitted[0] === 'joker' || elSplitted[0] === this.color || elSplitted[1] === currentCard[1]) {
-              availableCards.push(key) // this.getCardPoint(element) -> maybe we 'ill use in future for hard mode
-            }
-          });
-
-          if (availableCards.length) { // has a playable card
-
-            await this.pleaseWait(2000)
-            const RAND_KEY = availableCards[Math.floor(Math.random()*availableCards.length)]
-            const CARD_NAME = this.playerData[this.orderRelation[ORDER]].cards[RAND_KEY]
-            this.playerData[this.orderRelation[ORDER]].cards.splice(RAND_KEY, 1)
-            this.cardsPlayed.push(CARD_NAME)
-            console.log("Machine's card is available: " + CARD_NAME)
-            await this.calculateTheMove()
-
-          } else { // hasn't a playable card
-            
-            await this.pleaseWait(2500)
-            const DRAW_CARD = this.drawCard()
-            this.playerData[this.orderRelation[this.order]].cards.push(DRAW_CARD)
-            let splittedDrawCard = DRAW_CARD.split(':')
-            if (splittedDrawCard[0] === 'joker' || splittedDrawCard[0] === this.color || splittedDrawCard[1] === currentCard[1]) {
-              this.cardsPlayed.push(DRAW_CARD)
-              let machineCard = this.playerData[this.orderRelation[ORDER]].cards
-              this.playerData[this.orderRelation[ORDER]].cards.splice(machineCard.indexOf(DRAW_CARD), 1)
-              console.log("Machine's pass card is available: " + DRAW_CARD)
+            if (availableCards.length) { // has a playable card
+        
+              const RAND_KEY = availableCards[Math.floor(Math.random()*availableCards.length)]
+              const CARD_NAME = this.playerData[this.orderRelation[ORDER]].cards[RAND_KEY]
+              console.log("Machine's selected card: " + CARD_NAME)
+              await this.pleaseWait(2000)
+              console.log("Machine's selected card is available: " + CARD_NAME)
+              this.playerData[this.orderRelation[ORDER]].cards.splice(RAND_KEY, 1)
+              this.cardsPlayed.push(CARD_NAME)
               await this.calculateTheMove()
-            } else {
-              await this.pleaseWait(1500)
-              console.log("Machine's pass to right")
-              this.pass()
-            }
-          }
-          if (this.playerData[this.orderRelation[ORDER]].cards.length === 1) {
-            await this.uno(ORDER);
-          }
-          resolve()
-        })
 
+            } else { // hasn't a playable card
+              
+              await this.pleaseWait(2500)
+              const DRAW_CARD = this.drawCard()
+              this.playerData[this.orderRelation[this.order]].cards.push(DRAW_CARD)
+              let splittedDrawCard = DRAW_CARD.split(':')
+              
+              console.log("Machine's used right to pass " + DRAW_CARD)
+
+              if (splittedDrawCard[0] === 'joker' || splittedDrawCard[0] === this.color || splittedDrawCard[1] === currentCard[1]) {
+                this.cardsPlayed.push(DRAW_CARD)
+                
+                let machineCard = this.playerData[this.orderRelation[ORDER]].cards
+                this.playerData[this.orderRelation[ORDER]].cards.splice(machineCard.indexOf(DRAW_CARD), 1)
+                console.log("Machine's pass card is available: " + DRAW_CARD)
+                await this.calculateTheMove()
+              } else {
+                await this.pleaseWait(1500)
+                console.log("Machine's pass to right")
+                this.pass()
+              }
+            }
+            resolve()
+          })
+        }
+        console.log(
+          this.playerData[this.orderRelation[ORDER]].name,
+          this.playerData[this.orderRelation[ORDER]].cards.length
+        )
+        if (this.playerData[this.orderRelation[ORDER]].cards.length === 1) {
+          await this.uno(ORDER);
+        }
         this.play()
-      }
+        resolve()
+      })
     },
     uno (playerOrder) {
       return new Promise((resolve) => {
@@ -286,6 +301,7 @@ export default {
             }, 1000)
           }
         }
+        resolve()
       })
     },
     async calculateTheMove() {
@@ -359,7 +375,7 @@ export default {
               nextUser = this.nextUser(nextUser) // skip 1 more user
             } else { // switch direction and skip
               this.switchDirection()
-              nextUser = this.nextUser() // assign again
+              nextUser = this.playerData.lenght === 2 ? currentUser : this.nextUser() // assign again
             }
             this.order = nextUser
           } else {
@@ -408,20 +424,6 @@ export default {
       }
       return DIRECTIONS[this.direction][nextIndex]
     },
-    /*
-    async afterMove(firstMove = false) {
-
-      let currentCard = this.cardsPlayed[this.cardsPlayed.length - 1]
-      let nextUser = this.nextUser()
-      if (firstMove) {
-        
-      } else {
-        if (this.order !== 'bottom') {
-          this.playingMachine()
-        }
-      }
-    },
-    */
     switchDirection() {
       this.direction = this.direction === 'left' ? 'right' : 'left'
     },
@@ -439,20 +441,26 @@ export default {
      */
     dealCards() {
       return new Promise(async (resolve) => {
+        
+        console.log("Deal cards...")
         const PLAYER_DATA = Object.entries(this.playerData)
         // Draw player cards
         for (let card = 0; card < 7; card++) {
           for (let playerIndex = 0; playerIndex < PLAYER_DATA.length; playerIndex++) {
-            PLAYER_DATA[playerIndex][1].cards.push(this.drawCard())
+            let card = this.drawCard()
+            PLAYER_DATA[playerIndex][1].cards.push(card)
+            console.log("DEAL CARD: " + PLAYER_DATA[playerIndex][1].name + " - " + card)
             await this.pleaseWait(250)
           }
           await this.pleaseWait(250)
         }
           
         // Draw table card
-        this.cardsPlayed.push((this.tempFirstCard !== null ? this.tempFirstCard : this.drawCard()))
+        const TABLE_CARD = (this.tempFirstCard !== null ? this.tempFirstCard : this.drawCard())
+        console.log("DEAL CARD: TABLE - " + TABLE_CARD)
+        this.cardsPlayed.push(TABLE_CARD)
         await this.pleaseWait(500)
-        resolve(console.log("Deal cards..."))
+        resolve(console.log("deadCards() OK"))
       })
     },
     /**
@@ -541,7 +549,7 @@ export default {
       }
     },
     setOrder() {
-      new Promise(async (resolve) =>  {
+      return new Promise(async (resolve) =>  {
         const orders = this.orders.filter((el) => {
           return this.orderRelation[el] !== null;
         });
@@ -592,7 +600,7 @@ export default {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
     triggergameArea() {
-      new Promise ((resolve) => {
+      return new Promise ((resolve) => {
         setTimeout(() => {
           let tooltips = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
@@ -603,6 +611,11 @@ export default {
           resolve(console.log("Game Area DOM triggered..."))
         })
       })
+    }
+  },
+  watch: {
+    order() {
+      
     }
   },
   computed: {
