@@ -659,7 +659,6 @@ html {
           }
           .player-side {
             transition: 0.2s ease-out;
-            pointer-events: none;
             width: 100%;
             display: flex;
             flex-direction: column;

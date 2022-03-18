@@ -24,6 +24,7 @@ export default {
       drawnCard: null,
       rightToPass: null,
       tempFirstCard: null,
+      unoClicked: false,
       playerActions: {
         top: {
           pass: false,
@@ -176,8 +177,7 @@ export default {
               })
               nextUser = this.nextUser(nextUser) // skip 1 more user
             } else { // switch direction and skip
-              this.switchDirection()
-              console.log("direction switched")
+              await this.switchDirection()
               nextUser = this.nextUser() // assign again
             }
             this.order = nextUser
@@ -197,6 +197,7 @@ export default {
         )
         this.drawnCard = null
         this.rightToPass = null
+        this.unoClicked = false
         let currentCard = this.cardsPlayed[this.cardsPlayed.length - 1].split(':')
         if (ORDER === 'bottom') { // Human
           console.log("Human playing...")
@@ -287,21 +288,41 @@ export default {
     uno (playerOrder) {
       return new Promise((resolve) => {
         if (playerOrder === 'bottom') {
-          
+          const PASS_LIMIT = 1000 // ~ 1 second
+          let currentTime = 0
+          const PASS_INTERVAL = setInterval(() => {
+            if (currentTime > PASS_LIMIT) {
+              clearInterval(PASS_INTERVAL)
+              if (this.unoClicked) {
+                this.playerActions[playerOrder].uno = true
+                resolve()
+              } else { // punishment
+                this.playerActions[playerOrder].uno = null
+                this.playerData[this.orderRelation[playerOrder]].cards.push(this.drawCard())
+                this.playerData[this.orderRelation[playerOrder]].cards.push(this.drawCard())
+                setTimeout(() => {
+                  this.playerActions[playerOrder].uno = false
+                }, 1000)
+                resolve()
+              }
+            }
+            currentTime+=500
+          }, 500)
         } else {
           const RAND = Math.floor((Math.random() * 10) + 1)
-          if ((RAND / 2) % 0) {
+          if ((RAND / 2) % 0) { // random pass punishment
             this.playerActions[playerOrder].uno = true
+            resolve()
           } else {
             this.playerActions[playerOrder].uno = null
             this.playerData[this.orderRelation[playerOrder]].cards.push(this.drawCard())
             this.playerData[this.orderRelation[playerOrder]].cards.push(this.drawCard())
             setTimeout(() => {
               this.playerActions[playerOrder].uno = false
+              resolve()
             }, 1000)
           }
         }
-        resolve()
       })
     },
     async calculateTheMove() {
@@ -374,8 +395,8 @@ export default {
               })
               nextUser = this.nextUser(nextUser) // skip 1 more user
             } else { // switch direction and skip
-              this.switchDirection()
-              nextUser = this.playerData.lenght === 2 ? currentUser : this.nextUser() // assign again
+              nextUser = Object.entries(this.playerData).length === 2 ? this.order : this.nextUser(nextUser) // assign again
+              await this.switchDirection()
             }
             this.order = nextUser
           } else {
@@ -425,7 +446,9 @@ export default {
       return DIRECTIONS[this.direction][nextIndex]
     },
     switchDirection() {
-      this.direction = this.direction === 'left' ? 'right' : 'left'
+      return new Promise((resolve) => {
+        resolve(this.direction = this.direction === 'left' ? 'right' : 'left')
+      })
     },
     pickColor(color = null) {
       this.selectedColor = color
@@ -615,7 +638,6 @@ export default {
   },
   watch: {
     order() {
-      
     }
   },
   computed: {
@@ -754,7 +776,7 @@ export default {
               <span class="name" @click="playerData[orderRelation.bottom].cards.shift()">{{ playerData[orderRelation.bottom].name }}</span>
               <span class="action-buttons">
                 <button :class="playerActions.bottom.pass && 'active'" @click="drawnCard !== null ? pass() : false">PAS</button>
-                <button :class="playerActions.bottom.uno && 'active'" @click="nextUser()">UNO</button>
+                <button :class="playerActions.bottom.uno && 'active'" @click="unoClicked = true">UNO</button>
               </span>
             </div>
             <div class="cards">
