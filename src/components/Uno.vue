@@ -318,7 +318,7 @@ export default {
     },
     finish () {
       return new Promise((resolve) => {
-        const KEEP = true
+        let keepGoing = true
         let currentUser = null
         Object.entries(this.playerData).forEach((playerData, key) => {
           const KEY = key
@@ -345,13 +345,13 @@ export default {
 
           this.playerData[KEY].score += (500 - this.gameAfter.table[KEY].score)
           if (this.playerData[KEY].score >= 500) {
-            KEEP = false
+            keepGoing = false
           }
         })
 
         this.gameAfter.table.sort((a,b) => (a.score > b.score) ? 1 : ((b.score > a.score) ? -1 : 0)).reverse()
         this.gameAfter.title = this.gameAfter.table[0].name + ' WON!'
-        this.gameAfter.keep = KEEP
+        this.gameAfter.keep = keepGoing
         this.finishModal.show()
         resolve()
       }) 
