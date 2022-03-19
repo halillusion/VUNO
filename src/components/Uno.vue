@@ -786,24 +786,6 @@ export default {
         {{preparingSecond}}
       </div>
       <div class="game-area" :class="order">
-        <div v-if="orderRelation.top !== null && orderRelation.top !== undefined" class="position-absolute top-0 start-50 translate-middle-x top" :class="order == 'top' ? 'current' : ''">
-          <div class="player-side">
-            <div class="player-info">
-              <span class="score-badge" data-bs-toggle="tooltip" title="Score">
-                {{ playerData[orderRelation.top].score }}
-              </span>
-              <span class="name">{{ playerData[orderRelation.top].name }}<span class="total-card"> ({{getTopCards.length}})</span></span>
-              <span class="action-buttons">
-                <button :class="playerActions.top.pass && 'active'">PAS</button>
-                <button :class="playerActions.top.uno && 'active'">UNO</button>
-              </span>
-            </div>
-            <div class="cards">
-              <div v-for="(card, key) in getTopCards" :key="key" class="game-card rival" :data-card-type="card">
-              </div>
-            </div>
-          </div>
-        </div>
         <div v-if="orderRelation.left !== null && orderRelation.left !== undefined" class="position-absolute top-50 start-0 translate-middle-y left" :class="order == 'left' ? 'current' : ''">
           <div class="player-side">
             <div class="player-info">
@@ -818,6 +800,24 @@ export default {
             </div>
             <div class="cards">
               <div v-for="(card, key) in getLeftCards" :key="key" class="game-card rival" :data-card-type="card">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-if="orderRelation.top !== null && orderRelation.top !== undefined" class="position-absolute top-0 start-50 translate-middle-x top" :class="order == 'top' ? 'current' : ''">
+          <div class="player-side">
+            <div class="player-info">
+              <span class="score-badge" data-bs-toggle="tooltip" title="Score">
+                {{ playerData[orderRelation.top].score }}
+              </span>
+              <span class="name">{{ playerData[orderRelation.top].name }}<span class="total-card"> ({{getTopCards.length}})</span></span>
+              <span class="action-buttons">
+                <button :class="playerActions.top.pass && 'active'">PAS</button>
+                <button :class="playerActions.top.uno && 'active'">UNO</button>
+              </span>
+            </div>
+            <div class="cards">
+              <div v-for="(card, key) in getTopCards" :key="key" class="game-card rival" :data-card-type="card">
               </div>
             </div>
           </div>
@@ -853,7 +853,7 @@ export default {
             </div>
           </div>
         </div>
-        <div v-if="orderRelation.bottom !== null && orderRelation.bottom !== undefined" class="position-absolute bottom-0 start-50 translate-middle-x bottom"  :class="order == 'bottom' ? 'current' : ''">
+        <div v-if="orderRelation.bottom !== null && orderRelation.bottom !== undefined" class="position-absolute bottom-0 start-50 translate-middle bottom"  :class="order == 'bottom' ? 'current' : ''">
           <div class="player-side">
             <div class="player-info">
               <span class="score-badge" data-bs-toggle="tooltip" title="Score">

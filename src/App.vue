@@ -120,6 +120,12 @@ html {
     background: #e7e7e7;
     color: #0C4740;
     transition: $transition;
+    overflow: hidden;
+    background: $main-color;
+
+    #app {
+      overflow: auto;
+    }
 
     h1, h2, h3, h4, h5, h6,
     .h1, .h2, .h3, .h4, .h5, .h6 {
@@ -520,7 +526,6 @@ html {
 
         .game-area {
           min-height: calc(100vh - 12rem);
-          overflow: hidden;
           
           .position-absolute {
             display: flex;
@@ -851,7 +856,43 @@ html {
                 background: $accent-color-dark;
                 padding: 2rem;
                 &:before {
-                  display: none;
+                  display:none
+                }
+                &.green {
+                  background: $green-color;
+                }
+                &.blue {
+                  background: $blue-color;
+                }
+                &.yellow {
+                  background: $yellow-color;
+                }
+                &.red {
+                  background: $red-color;
+                }
+                &.direction-right,
+                &.direction-left {
+                  position: relative;
+                  &:after {
+                    opacity: 0.5;
+                    position: absolute;
+                    font-size: 5rem;
+                    color: #fff;
+                  }
+                }
+                &.direction-left {
+                  &:after {
+                    bottom: 0;
+                    right: 1rem;
+                    content: '🡣'
+                  }
+                }
+                &.direction-right {
+                  &:after {
+                    top: 0;
+                    left: 1rem;
+                    content: '🡡'
+                  }
                 }
               }
             }
