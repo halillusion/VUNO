@@ -726,6 +726,13 @@ html {
           & .bottom {
             .player-side {
               pointer-events: all;
+              .cards {
+                .game-card {
+                  & + .game-card {
+                    margin-left: -2rem;
+                  }
+                }
+              }
             }
           }
           .current {
