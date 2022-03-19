@@ -6,14 +6,14 @@ VUNO; It is a game developed for hobby purposes with Vue.
 
 ## Credits
 
-- [Vue.js](https://vuejs.org/){:target="_blank"}
-- [Bootstrap](https://getbootstrap.com/){:target="_blank"}
-- [Bootswatch](https://bootswatch.com/){:target="_blank"}
-- [JetBrains Mono Font](https://fonts.google.com/specimen/JetBrains+Mono){:target="_blank"}
-- [Press Start 2P Font](https://fonts.google.com/specimen/Press+Start+2P){:target="_blank"}
-- [Material Design Icons](https://materialdesignicons.com/){:target="_blank"}
-- [Press Start 2P Font](https://fonts.google.com/specimen/Press+Start+2P){:target="_blank"}
+- [Vue.js](https://vuejs.org/)
+- [Bootstrap](https://getbootstrap.com/)
+- [Bootswatch](https://bootswatch.com/)
+- [JetBrains Mono Font](https://fonts.google.com/specimen/JetBrains+Mono)
+- [Press Start 2P Font](https://fonts.google.com/specimen/Press+Start+2P)
+- [Material Design Icons](https://materialdesignicons.com/)
+- [Press Start 2P Font](https://fonts.google.com/specimen/Press+Start+2P)
 
 ---
 
-`UNO game and format is owned by [Mattel](https://mattel.com){:target="_blank"}.`
+`UNO game and format is owned by [Mattel](https://mattel.com).`
