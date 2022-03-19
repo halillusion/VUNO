@@ -121,7 +121,8 @@ html {
     color: #0C4740;
     transition: $transition;
 
-    h1, h2, h3, h4, h5, h6 {
+    h1, h2, h3, h4, h5, h6,
+    .h1, .h2, .h3, .h4, .h5, .h6 {
       font-family: $font-secondary
     }
     img {
@@ -192,6 +193,7 @@ html {
         background: $main-color-dark;
         color: $accent-color;
         border-color: $accent-color;
+        opacity: 0.9;
         .modal-header {
           border-bottom-color: $accent-color;
         }
@@ -657,6 +659,7 @@ html {
               }
             }
           }
+
           .player-side {
             transition: 0.2s ease-out;
             width: 100%;
@@ -666,7 +669,10 @@ html {
             align-content: center;
             justify-content: center;
             align-items: center;
-
+            pointer-events: none;
+            .cards {
+              pointer-events: none;
+            }
             .player-info {
               margin-bottom: 1rem;
               font-size: 1rem;
@@ -698,7 +704,6 @@ html {
                   color: $accent-color-dark;
                   font-family: $font-primary;
                   font-size: 0.8rem;
-                  pointer-events: none;
                   &.active {
                     color: #fff;
                     text-shadow: 0 0 0.4rem rgba(255,255,255,0.4);
@@ -710,21 +715,21 @@ html {
               }
             }
           }
-
+          & .bottom {
+            .player-side {
+              pointer-events: all;
+            }
+          }
           .current {
             &.bottom {
               .player-side {
                 pointer-events: all;
-                
-                .action-buttons {
-                  button {
-                    pointer-events: all;
-                  }
+                .cards {
+                  pointer-events: all;
                 }
               }
             }
             .player-side {
-              opacity: 1;
               .name {
                 animation: 1s opacityHalf infinite
               }
