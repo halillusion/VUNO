@@ -1,7 +1,19 @@
-# Vue 3 + Vite
+![VUNO Logo](https://raw.githubusercontent.com/KalipsoCollective/VUNO/main/src/assets/logo.svg "VUNO Logo")
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+# ABOUT VUNO
 
-## Recommended IDE Setup
+VUNO; It is a game developed for hobby purposes with Vue.
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+## Credits
+
+- [Vue.js](https://vuejs.org/){:target="_blank"}
+- [Bootstrap](https://getbootstrap.com/){:target="_blank"}
+- [Bootswatch](https://bootswatch.com/){:target="_blank"}
+- [JetBrains Mono Font](https://fonts.google.com/specimen/JetBrains+Mono){:target="_blank"}
+- [Press Start 2P Font](https://fonts.google.com/specimen/Press+Start+2P){:target="_blank"}
+- [Material Design Icons](https://materialdesignicons.com/){:target="_blank"}
+- [Press Start 2P Font](https://fonts.google.com/specimen/Press+Start+2P){:target="_blank"}
+
+---
+
+`UNO game and format is owned by [Mattel](https://mattel.com){:target="_blank"}.`

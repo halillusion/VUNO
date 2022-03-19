@@ -829,19 +829,6 @@ export default {
             </div>
           </div>
         </div>
-        <div class="position-absolute top-50 start-50 translate-middle center">
-          <div class="game-table" :class="'direction-' + direction + ' ' + color + ' ' + order">
-            <div class="other-cards" data-bs-toggle="tooltip" data-bs-placement="top" title="Draw a card" @click="drawCardToSlot()">
-              <img src="@/assets/logo.svg" alt="Logo" />
-            </div>
-            <div class="current-card">
-              <div class="cards" @click="test()">
-                <div v-for="(card, key) in tableCards" :key="key" class="game-card" :data-card-type="card">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
         <div v-if="orderRelation.right !== null && orderRelation.right !== undefined" class="position-absolute top-50 end-0 translate-middle-y right" :class="order == 'right' ? 'current' : ''">
           <div class="player-side">
             <div class="player-info">
@@ -856,6 +843,19 @@ export default {
             </div>
             <div class="cards">
               <div v-for="(card, key) in getRightCards" :key="key" class="game-card rival" :data-card-type="card">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="position-absolute top-50 start-50 translate-middle center">
+          <div class="game-table" :class="'direction-' + direction + ' ' + color + ' ' + order">
+            <div class="other-cards" data-bs-toggle="tooltip" data-bs-placement="top" title="Draw a card" @click="drawCardToSlot()">
+              <img src="@/assets/logo.svg" alt="Logo" />
+            </div>
+            <div class="current-card">
+              <div class="cards" @click="test()">
+                <div v-for="(card, key) in tableCards" :key="key" class="game-card" :data-card-type="card">
+                </div>
               </div>
             </div>
           </div>

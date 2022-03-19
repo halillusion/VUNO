@@ -31,7 +31,7 @@ import Uno from './components/Uno.vue'
         <small class="copyright">UNO game and format is owned by <a href="https://mattel.com" target="_blank" rel="noopener noreferrer">Mattel.</a></small>
       </div>
       <div>
-        <small class="copyright">This game is an open source project. <a target="_blank" href="https://github.com/halillusion/vueno">Contribute.</a></small>
+        <small class="copyright">This game is an open source project. <a target="_blank" href="https://github.com/KalipsoCollective/VUNO">Contribute.</a></small>
       </div>
     </div>
   </div>
@@ -387,31 +387,31 @@ html {
               box-shadow: 0 0 0.8rem #092522;
             }
             & + .game-card {
-              margin-left: -3rem;
+              margin-left: -4rem;
             }
 
-            &:not(.rivall)[data-card-type*="red"] {
+            &:not(.rival)[data-card-type*="red"] {
               background: $red-color;
               color: #fff;
             }
-            &:not(.rivall)[data-card-type*="green"] {
+            &:not(.rival)[data-card-type*="green"] {
               background: $green-color;
               color: #fff;
             }
-            &:not(.rivall)[data-card-type*="blue"] {
+            &:not(.rival)[data-card-type*="blue"] {
               background: $blue-color;
               color: #fff;
             }
-            &:not(.rivall)[data-card-type*="yellow"] {
+            &:not(.rival)[data-card-type*="yellow"] {
               background: $yellow-color;
               color: #fff;
             }
-            &:not(.rivall)[data-card-type*="joker"] {
+            &:not(.rival)[data-card-type*="joker"] {
               background: #000;
               color: #fff;
             }
 
-            &:not(.rivall)[data-card-type] {
+            &:not(.rival)[data-card-type] {
               &:before {
                 pointer-events: none;
                 position: absolute;
@@ -436,7 +436,7 @@ html {
               }
             }
 
-            &:not(.rivall)[data-card-type*=":block"] {
+            &:not(.rival)[data-card-type*=":block"] {
               &:before {
                 left: 0.1rem;
                 top: 0rem;
@@ -450,7 +450,7 @@ html {
               }
             }
 
-            &:not(.rivall)[data-card-type*=":direction"] {
+            &:not(.rival)[data-card-type*=":direction"] {
               &:before {
                 transform: rotate(135deg);
                 left: -0.4rem;
@@ -465,7 +465,7 @@ html {
               }
             }
 
-            &:not(.rivall)[data-card-type*=":color"] {
+            &:not(.rival)[data-card-type*=":color"] {
               &:before {
                 content: '';
                 width: 1.5rem;
@@ -487,7 +487,7 @@ html {
               }
             }
 
-            &:not(.rivall)[data-card-type*="+2"] {
+            &:not(.rival)[data-card-type*="+2"] {
               &:before {
                 content: "+2"
               }
@@ -496,7 +496,7 @@ html {
               }
             }
 
-            &:not(.rivall)[data-card-type*="+4"] {
+            &:not(.rival)[data-card-type*="+4"] {
               &:before {
                 content: "+4"
               }
@@ -506,7 +506,7 @@ html {
             }
 
             @for $i from 0 through 9 {
-                &:not(.rivall)[data-card-type*=":#{$i}"] {
+                &:not(.rival)[data-card-type*=":#{$i}"] {
                 &:before {
                   content: "#{$i}"
                 }
@@ -521,6 +521,10 @@ html {
         .game-area {
           min-height: calc(100vh - 12rem);
           overflow: hidden;
+          
+          .position-absolute {
+            display: flex;
+          }
           
           .game-table {
             transition: $transition;
@@ -607,8 +611,8 @@ html {
             .other-cards {
               cursor: pointer;
               background: $accent-color-dark;
-              border: 3px solid #fff;
-              border-radius: 0.4rem;
+              border: 2px solid #fff;
+              border-radius: 0.5rem;
               height: 8rem;
               width: 5rem;
               transition: 0.2s ease-out;
@@ -622,7 +626,6 @@ html {
               &:hover {
                 transform: scale(1.1);
                 z-index: 1;
-                border-style: dotted;
               }
               img {
                 transform: rotate(315deg);
@@ -672,6 +675,7 @@ html {
             pointer-events: none;
             .cards {
               pointer-events: none;
+              margin: 1rem 2rem
             }
             .player-info {
               margin-bottom: 1rem;
@@ -726,19 +730,17 @@ html {
                 pointer-events: all;
                 .cards {
                   pointer-events: all;
+                  .game-card {
+                  & + .game-card {
+                      margin-left: -1rem;
+                    }
+                  }
                 }
               }
             }
             .player-side {
               .name {
                 animation: 1s opacityHalf infinite
-              }
-              .cards {
-                .game-card {
-                  & + .game-card {
-                    margin-left: -1rem;
-                  }
-                }
               }
             }
           }
@@ -764,10 +766,94 @@ html {
               }
             }
           }
+
+          .bottom {
+            &.position-absolute {
+              width: auto;
+            }
+          }
+        }
+      }
+    }
+    @media (max-width: 992px) {
+      .wrap {
+        .game-screen {
+          .game-area {
+            .game-table {
+              width: 15rem;
+              height: 15rem;
+            }
+          }
+        }
+      }
+    }
+    @media (max-width: 800px) {
+      .wrap {
+        .game-screen {
+          .game-area {
+            .position-absolute {
+              position: relative !important;
+              transform: none !important;
+              left: auto !important;
+              top: auto !important;
+              bottom: auto !important;
+              right: auto !important;
+              list-style-type: circle;
+              &.left, &.right {
+                .player-side {
+                  transform: none !important;
+                  .player-info {
+                    margin-bottom: 0;
+                  }
+                }
+              }
+              &.current {
+                .player-side {
+                  background: $main-color-dark;
+                }
+              }
+              .player-side {
+                padding: 1rem;
+                .cards {
+                  width: 100%;
+                  flex-direction: row;
+                  flex-wrap: wrap;
+                  align-content: center;
+                  justify-content: space-evenly;
+                  align-items: center;
+                  .game-card {
+                    margin-bottom: 1rem;
+                    & + .game-card {
+                      margin-left: 0 !important;
+                    }
+                  }
+                }
+              }
+              .game-table {
+                width: 100%;
+                height: auto;
+                border-radius: 0;
+                border: none;
+                background: $accent-color-dark;
+                padding: 2rem;
+                &:before {
+                  display: none;
+                }
+              }
+            }
+            .left, .right, .top {
+              .player-side {
+                .cards {
+                  display: none
+                }
+              }
+            }
+          }
         }
       }
     }
   }
+
   // Dark Theme
   /*
   &[data-theme=dark] {
