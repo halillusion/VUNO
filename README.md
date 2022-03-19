@@ -1,4 +1,4 @@
-![VUNO Logo](https://raw.githubusercontent.com/KalipsoCollective/VUNO/main/src/assets/logo.svg "VUNO Logo")
+![VUNO Logo](https://raw.githubusercontent.com/halillusion/VUNO/main/src/assets/logo.svg "VUNO Logo")
 
 # ABOUT VUNO
 
@@ -15,5 +15,6 @@ VUNO; It is a game developed for hobby purposes with Vue.
 - [Press Start 2P Font](https://fonts.google.com/specimen/Press+Start+2P)
 
 ---
-
-`UNO game and format is owned by [Mattel](https://mattel.com).`
+```
+UNO game and format is owned by [Mattel](https://mattel.com).
+```

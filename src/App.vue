@@ -31,7 +31,7 @@ import Uno from './components/Uno.vue'
         <small class="copyright">UNO game and format is owned by <a href="https://mattel.com" target="_blank" rel="noopener noreferrer">Mattel.</a></small>
       </div>
       <div>
-        <small class="copyright">This game is an open source project. <a target="_blank" href="https://github.com/KalipsoCollective/VUNO">Contribute.</a></small>
+        <small class="copyright">This game is an open source project. <a target="_blank" href="https://github.com/halillusion/VUNO">Contribute.</a></small>
       </div>
     </div>
   </div>
