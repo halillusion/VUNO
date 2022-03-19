@@ -13,8 +13,5 @@ VUNO; It is a game developed for hobby purposes with Vue.
 - [Press Start 2P Font](https://fonts.google.com/specimen/Press+Start+2P)
 - [Material Design Icons](https://materialdesignicons.com/)
 - [Press Start 2P Font](https://fonts.google.com/specimen/Press+Start+2P)
-
 ---
-```
-UNO game and format is owned by [Mattel](https://mattel.com).
-```
+>UNO game and format is owned by [Mattel](https://mattel.com).
