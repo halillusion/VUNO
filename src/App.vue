@@ -173,7 +173,7 @@ html {
         }
       }
       .navbar-toggler {
-        color: $main-color;
+        color: $accent-color;
       }
       .navbar-nav {
         .nav-item {
@@ -699,6 +699,10 @@ html {
               .name {
                 margin: 0 2rem;
                 color: $accent-color;
+                .total-card {
+                  font-family: $font-secondary;
+                  display: none;
+                }
               }
 
               .action-buttons {
@@ -799,6 +803,9 @@ html {
               bottom: auto !important;
               right: auto !important;
               list-style-type: circle;
+              .total-card {
+                display: inline !important;
+              }
               &.left, &.right {
                 .player-side {
                   transform: none !important;

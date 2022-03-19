@@ -722,13 +722,6 @@ export default {
       window.location.reload()
     },
     test () {
-      const KEEP = true
-      Object.entries(this.playerData).forEach((playerData, key) => {
-        const KEY = key
-        const PLYR = { ...playerData }
-        console.log(PLYR)
-        console.log({ ...playerData[1] })
-      })
     }
   },
   watch: {
@@ -799,7 +792,7 @@ export default {
               <span class="score-badge" data-bs-toggle="tooltip" title="Score">
                 {{ playerData[orderRelation.top].score }}
               </span>
-              <span class="name">{{ playerData[orderRelation.top].name }}</span>
+              <span class="name">{{ playerData[orderRelation.top].name }}<span class="total-card"> ({{getTopCards.length}})</span></span>
               <span class="action-buttons">
                 <button :class="playerActions.top.pass && 'active'">PAS</button>
                 <button :class="playerActions.top.uno && 'active'">UNO</button>
@@ -817,7 +810,7 @@ export default {
               <span class="score-badge" data-bs-toggle="tooltip" title="Score">
                 {{ playerData[orderRelation.left].score }}
               </span>
-              <span class="name">{{ playerData[orderRelation.left].name }}</span>
+              <span class="name">{{ playerData[orderRelation.left].name }}<span class="total-card"> ({{getLeftCards.length}})</span></span>
               <span class="action-buttons">
                 <button :class="playerActions.left.pass && 'active'">PAS</button>
                 <button :class="playerActions.left.uno && 'active'">UNO</button>
@@ -835,7 +828,7 @@ export default {
               <span class="score-badge" data-bs-toggle="tooltip" title="Score">
                 {{ playerData[orderRelation.right].score }}
               </span>
-              <span class="name">{{ playerData[orderRelation.right].name }}</span>
+              <span class="name">{{ playerData[orderRelation.right].name }}<span class="total-card"> ({{getRightCards.length}})</span></span>
               <span class="action-buttons">
                 <button :class="playerActions.right.pass && 'active'">PAS</button>
                 <button :class="playerActions.right.uno && 'active'">UNO</button>
@@ -853,7 +846,7 @@ export default {
               <img src="@/assets/logo.svg" alt="Logo" />
             </div>
             <div class="current-card">
-              <div class="cards" @click="test()">
+              <div class="cards">
                 <div v-for="(card, key) in tableCards" :key="key" class="game-card" :data-card-type="card">
                 </div>
               </div>
@@ -866,7 +859,7 @@ export default {
               <span class="score-badge" data-bs-toggle="tooltip" title="Score">
                 {{ playerData[orderRelation.bottom].score }}
               </span>
-              <span class="name" @click="playerData[orderRelation.bottom].cards.shift()">{{ playerData[orderRelation.bottom].name }}</span>
+              <span class="name">{{ playerData[orderRelation.bottom].name }}<span class="total-card"> ({{getBottomCards.length}})</span></span>
               <span class="action-buttons">
                 <button :class="playerActions.bottom.pass && 'active'" @click="drawnCard !== null ? pass() : false">PAS</button>
                 <button :class="playerActions.bottom.uno && 'active'" @click="unoClicked = true">UNO</button>
