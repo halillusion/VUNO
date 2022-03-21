@@ -1,5 +1,5 @@
 <script>
-import Header from './Header.vue'
+// import Header from './Header.vue'
 export default {
   data() {
     return {
@@ -53,7 +53,7 @@ export default {
     }
   },
   components: {
-    Header
+    // Header
   },
   methods: {
     /* Init game */
@@ -750,7 +750,7 @@ export default {
 </script>
 
 <template>
-  <Header :screen="screen" />
+  <!-- <Header :screen="screen" /> -->
   <div class="wrap">
     <div v-if="screen === 'start'" class="start-screen">
       <div class="container">

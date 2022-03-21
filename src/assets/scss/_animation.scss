@@ -1,0 +1,61 @@
+@keyframes textShadow {
+  0% {
+    text-shadow: 0 0 8px currentColor;
+  }
+
+  50% {
+    text-shadow: 0 0 20px currentColor;
+  }
+
+  100% {
+    text-shadow: 0 0 8px currentColor;
+  }
+}
+
+@keyframes spinLeft { 
+  100% { 
+    transform: rotateZ(360deg);
+  }
+}
+
+@keyframes spinRight { 
+  100% { 
+    transform: rotateZ(-360deg);
+  }
+  
+}
+
+@keyframes downToScene { 
+  0% { 
+    opacity: 0;
+    transform: scale(2);
+  }
+  100% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes opacityHalf { 
+  0% { 
+    opacity: 1;
+  }
+  50% { 
+    opacity: 0.5;
+  }
+  100% { 
+    opacity: 1;
+  }
+}
+
+@keyframes boxShadow { 
+  0% { 
+    box-shadow: 0 0 0rem #fff;
+  }
+  50% { 
+    box-shadow: 0 0 4rem #fff;
+  }
+  100% { 
+    box-shadow: 0 0 0rem #fff;
+  }
+}
