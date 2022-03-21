@@ -7,11 +7,9 @@ VUNO; It is a game developed for hobby purposes with Vue.
 ## Credits
 
 - [Vue.js](https://vuejs.org/)
-- [Bootstrap](https://getbootstrap.com/)
-- [Bootswatch](https://bootswatch.com/)
+- [NES.css](https://nostalgic-css.github.io/NES.css/)
+- [Bootstrap Grid](https://getbootstrap.com/)
 - [JetBrains Mono Font](https://fonts.google.com/specimen/JetBrains+Mono)
-- [Press Start 2P Font](https://fonts.google.com/specimen/Press+Start+2P)
-- [Material Design Icons](https://materialdesignicons.com/)
 - [Press Start 2P Font](https://fonts.google.com/specimen/Press+Start+2P)
 ---
 >UNO game and format is owned by [Mattel](https://mattel.com).

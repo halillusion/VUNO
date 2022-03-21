@@ -1,8 +1,9 @@
 <script>
-// import Header from './Header.vue'
+import Progress from "./Progress.vue"
 export default {
   data() {
     return {
+      progress: 0,
       screen: 'start',
       numberOfPlayer: 2,
       playerName: 'Gamer',
@@ -53,7 +54,7 @@ export default {
     }
   },
   components: {
-    // Header
+    Progress
   },
   methods: {
     /* Init game */
@@ -748,9 +749,23 @@ export default {
   }
 }
 </script>
-
 <template>
-  <!-- <Header :screen="screen" /> -->
+  <div class="container-fluid">
+    <div class="wrapper">
+      <!-- Loader -->
+      <div class="loader">
+        <div class="row align-items-center justify-content-center h-100">
+          <div class="col-9 col-md-6 col-lg-4">
+            <img src="../assets/logo.png" alt="Logo">
+            <h1>Loading...</h1>
+            <Progress />
+          </div>
+        </div>
+      </div>
+      <!-- /Loader -->
+    </div>
+  </div>
+  <!--
   <div class="wrap">
     <div v-if="screen === 'start'" class="start-screen">
       <div class="container">
@@ -873,8 +888,9 @@ export default {
         </div>
       </div>
     </div>
-  </div>
+  </div>-->
   <!-- History -->
+  <!--
   <div class="modal fade" id="historyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -892,8 +908,9 @@ export default {
         </div>
       </div>
     </div>
-  </div>
+  </div>-->
   <!-- Color Selection Modal -->
+  <!--
   <div class="modal fade" id="colorModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="colorModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -910,8 +927,8 @@ export default {
         </div>
       </div>
     </div>
-  </div>
-  <!-- Finish Modal -->
+  </div>-->
+  <!-- Finish Modal --><!--
   <div class="modal fade" id="finishModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="finishModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -931,5 +948,5 @@ export default {
         </div>
       </div>
     </div>
-  </div>
+  </div>-->
 </template>

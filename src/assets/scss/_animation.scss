@@ -48,6 +48,15 @@
   }
 }
 
+@keyframes opacity { 
+  0% { 
+    opacity: 0;
+  }
+  100% { 
+    opacity: 1;
+  }
+}
+
 @keyframes boxShadow { 
   0% { 
     box-shadow: 0 0 0rem #fff;
@@ -57,5 +66,24 @@
   }
   100% { 
     box-shadow: 0 0 0rem #fff;
+  }
+}
+
+
+@keyframes borderTrapezoid { 
+  0% { 
+    border-radius: 255px 25px 225px 25px/25px 225px 25px 255px;
+  }
+  25% { 
+    border-radius: 300px 50px 300px 50px/50px 300px 50px 300px;
+  }
+  50% { 
+    border-radius: 300px 25px 120px 25px/25px 120px 25px 120px;
+  }
+  75% { 
+    border-radius: 300px 50px 300px 50px/50px 300px 50px 300px;
+  }
+  100% { 
+    border-radius: 255px 25px 225px 25px/25px 225px 25px 255px;
   }
 }
