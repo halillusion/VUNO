@@ -1,5 +1,6 @@
 <script>
 import Progress from "./Progress.vue"
+import Start from "./Start.vue"
 export default {
   data() {
     return {
@@ -54,7 +55,7 @@ export default {
     }
   },
   components: {
-    Progress
+    Progress, Start
   },
   methods: {
     /* Init game */
@@ -767,7 +768,9 @@ export default {
       <!-- /Progress -->
 
       <!-- Start -->
-      <Start v-if="screen === 'start'" :playerName="playerName" />
+      <Start v-if="screen === 'start'" 
+        :modelValue="{name: playerName, number: numberOfPlayer}" 
+        @update:modelValue="value => {playerName = value.name, numberOfPlayer = value.number}" />
       <!-- /Start -->
     </div>
   </div>
