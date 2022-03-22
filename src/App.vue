@@ -5,7 +5,8 @@ import Game from './components/Game.vue'
   <Game />
 </template>
 <style lang="scss">
-@import "../node_modules/nes.css/css/nes.css";
+// @import "../node_modules/nes.css/css/nes.css";
+@import "./assets/scss/reset";
 @import "./assets/scss/variables";
 @import "./assets/scss/font";
 @import "./assets/scss/animation";

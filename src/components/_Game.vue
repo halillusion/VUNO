@@ -746,29 +746,208 @@ export default {
   },
   created() {
     this.screen = 'progress'
-    const WIDTH = setInterval(async () => {
-      if ((this.progress + 1) <= 100)
-        this.progress+=1
-        
-      if (this.progress>99) {
-        clearInterval(WIDTH)
-        await this.pleaseWait(700)
-        this.screen = 'start'
-      }
-    }, 11)
+    //this.playerName = this.fakePlayerNames[Math.floor(Math.random()*this.fakePlayerNames.length)]
   }
 }
 </script>
 <template>
   <div class="container-fluid">
-    <div class="row align-items-center justify-content-center">
-      <!-- Progress -->
-      <Progress v-if="screen === 'progress'" :progress="progress" />
-      <!-- /Progress -->
-
-      <!-- Start -->
-      <Start v-if="screen === 'start'" :playerName="playerName" />
-      <!-- /Start -->
+    <div class="wrapper">
+      <!-- Loader -->
+      <div v-if="screen == 'progress'" class="loader">
+        <div class="row align-items-center justify-content-center h-100">
+          <div class="col-9 col-md-6 col-lg-4">
+            <img src="../assets/logo.png" alt="Logo">
+            <h1>Loading...</h1>
+            <Progress />
+          </div>
+        </div>
+      </div>
+      <!-- /Loader -->
     </div>
   </div>
+  <!--
+  <div class="wrap">
+    <div v-if="screen === 'start'" class="start-screen">
+      <div class="container">
+        <div class="row justify-content-center align-items-center vh-100">
+          <div class="col-12 col-md-6 col-lg-4">
+            <img class="logo mx-auto d-flex" src="@/assets/logo.svg" alt="VUNO Logo" />
+            <div class="mt-5">
+              <div v-if="alertMessage" class="alert alert-warning mt-5" role="alert">
+                {{alertMessage}}
+              </div>
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" v-model="playerName" maxlenght="40" placeholder="Player Name">
+                <label for="player_name">Player Name</label>
+              </div>
+              <div class="form-floating mb-3">
+                <select class="form-select" id="player_number" v-model="numberOfPlayer" aria-label="Number of Players">
+                  <option value="2" selected>2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+                <label for="player_number">Number of Players</label>
+              </div>
+              <div class="d-grid">
+                <button @click="startGame()" class="btn btn-success d-block btn-lg">Play!</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else class="game-screen" :class="screen == 'game' ? 'active' : (screen == 'countdown' && 'count-active')">
+      <div class="counter">
+        {{preparingSecond}}
+      </div>
+      <div class="game-area" :class="order">
+        <div v-if="orderRelation.left !== null && orderRelation.left !== undefined" class="position-absolute top-50 start-0 translate-middle-y left" :class="order == 'left' ? 'current' : ''">
+          <div class="player-side">
+            <div class="player-info">
+              <span class="score-badge" data-bs-toggle="tooltip" title="Score">
+                {{ playerData[orderRelation.left].score }}
+              </span>
+              <span class="name">{{ playerData[orderRelation.left].name }}<span class="total-card"> ({{getLeftCards.length}})</span></span>
+              <span class="action-buttons">
+                <button :class="playerActions.left.pass && 'active'">PAS</button>
+                <button :class="playerActions.left.uno && 'active'">UNO</button>
+              </span>
+            </div>
+            <div class="cards">
+              <div v-for="(card, key) in getLeftCards" :key="key" class="game-card rival" :data-card-type="card">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-if="orderRelation.top !== null && orderRelation.top !== undefined" class="position-absolute top-0 start-50 translate-middle-x top" :class="order == 'top' ? 'current' : ''">
+          <div class="player-side">
+            <div class="player-info">
+              <span class="score-badge" data-bs-toggle="tooltip" title="Score">
+                {{ playerData[orderRelation.top].score }}
+              </span>
+              <span class="name">{{ playerData[orderRelation.top].name }}<span class="total-card"> ({{getTopCards.length}})</span></span>
+              <span class="action-buttons">
+                <button :class="playerActions.top.pass && 'active'">PAS</button>
+                <button :class="playerActions.top.uno && 'active'">UNO</button>
+              </span>
+            </div>
+            <div class="cards">
+              <div v-for="(card, key) in getTopCards" :key="key" class="game-card rival" :data-card-type="card">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-if="orderRelation.right !== null && orderRelation.right !== undefined" class="position-absolute top-50 end-0 translate-middle-y right" :class="order == 'right' ? 'current' : ''">
+          <div class="player-side">
+            <div class="player-info">
+              <span class="score-badge" data-bs-toggle="tooltip" title="Score">
+                {{ playerData[orderRelation.right].score }}
+              </span>
+              <span class="name">{{ playerData[orderRelation.right].name }}<span class="total-card"> ({{getRightCards.length}})</span></span>
+              <span class="action-buttons">
+                <button :class="playerActions.right.pass && 'active'">PAS</button>
+                <button :class="playerActions.right.uno && 'active'">UNO</button>
+              </span>
+            </div>
+            <div class="cards">
+              <div v-for="(card, key) in getRightCards" :key="key" class="game-card rival" :data-card-type="card">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="position-absolute top-50 start-50 translate-middle center">
+          <div class="game-table" :class="'direction-' + direction + ' ' + color + ' ' + order">
+            <div class="other-cards" data-bs-toggle="tooltip" data-bs-placement="top" title="Draw a card" @click="drawCardToSlot()">
+              <img src="@/assets/logo.svg" alt="Logo" />
+            </div>
+            <div class="current-card">
+              <div class="cards">
+                <div v-for="(card, key) in tableCards" :key="key" class="game-card" :data-card-type="card">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-if="orderRelation.bottom !== null && orderRelation.bottom !== undefined" class="position-absolute bottom-0 start-50 translate-middle bottom"  :class="order == 'bottom' ? 'current' : ''">
+          <div class="player-side">
+            <div class="player-info">
+              <span class="score-badge" data-bs-toggle="tooltip" title="Score">
+                {{ playerData[orderRelation.bottom].score }}
+              </span>
+              <span class="name">{{ playerData[orderRelation.bottom].name }}<span class="total-card"> ({{getBottomCards.length}})</span></span>
+              <span class="action-buttons">
+                <button :class="playerActions.bottom.pass && 'active'" @click="drawnCard !== null ? pass() : false">PAS</button>
+                <button :class="playerActions.bottom.uno && 'active'" @click="unoClicked = true">UNO</button>
+              </span>
+            </div>
+            <div class="cards">
+              <div v-for="(card, key) in getBottomCards" :key="key" class="game-card" :data-card-type="card" @click="selectedCard = [card, key]">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>-->
+  <!-- History -->
+  <!--
+  <div class="modal fade" id="historyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="historyModalLabel">History</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <ul v-for="(data, key) in history" :key="key" class="list-group list-group-flush mb-3">
+            <p class="text-center mb-0 h5">{{data.title}}</p>
+            <li v-for="(game, index) in data.table" :key="index" class="list-group-item bg-black" :class="game.current ? 'text-success' : 'text-white'">
+              {{game.name}}: {{game.score}}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>-->
+  <!-- Color Selection Modal -->
+  <!--
+  <div class="modal fade" id="colorModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="colorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="colorModalLabel">Pick a color</h5>
+        </div>
+        <div class="modal-body">
+          <div class="btn-group d-flex mx-auto" role="group" aria-label="Pick a color">
+            <button class="btn btn-danger" @click="pickColor('red')">Red</button>
+            <button class="btn btn-success" @click="pickColor('green')">Green</button>
+            <button class="btn btn-primary" @click="pickColor('blue')">Blue</button>
+            <button class="btn btn-warning" @click="pickColor('yellow')">Yellow</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>-->
+  <!-- Finish Modal --><!--
+  <div class="modal fade" id="finishModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="finishModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 v-if="gameAfter" class="modal-title" id="finishModalLabel">{{ gameAfter.title }}</h5>
+        </div>
+        <div class="modal-body" v-if="gameAfter">
+          <ul class="list-group list-group-flush mb-3">
+            <li v-for="(data, key) in gameAfter.table" :key="key" class="list-group-item bg-black" :class="data.current ? 'text-success' : 'text-white'">
+              {{data.name}}: {{data.score}}
+            </li>
+          </ul>
+          <div class="btn-group d-flex mx-auto" role="group">
+            <button class="btn btn-dark" @click="reloadPage()">Play Again!</button>
+            <button v-if="gameAfter.keep" class="btn btn-success" @click="startGame(true)">Keep Going!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>-->
 </template>

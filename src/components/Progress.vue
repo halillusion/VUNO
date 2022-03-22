@@ -1,29 +1,36 @@
 <template>
-  <div class="progress">
-    <div class="bar" :style="'width: '+width+'%'"></div>
+  <div class="col-9 col-md-6 col-lg-4">
+    <div class="loader" :class="loaderClass">
+      <img src="../assets/logo.png" alt="Logo">
+      <div class="row justify-content-center">
+        <div class="col-8">
+          <div class="progress">
+            <div class="bar" :style="'width: '+progress+'%'">Loading</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      width: 0
+      loaderClass: ''
     }
   },
+  props: ['progress'],
   created() {
+  },
+  watch: {
+    progress(value) {
 
-    const WIDTH = setInterval(() => {
-      this.width+=5
-      if (this.width>100) {
-        this.width = 0
-        // clearInterval(WIDTH)
-      } else if (this.width==50 || this.width==80) {
-        this.width+=20
-      } else if (this.width==15) {
-        this.width+=25
+      if (value > 95) {
+        this.loaderClass = 'opacity-down'
+      } else {
+        this.loaderClass = ''
       }
-    }, 1000)
-
+    }
   }
 }
 </script>
