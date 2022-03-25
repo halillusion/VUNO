@@ -1,3 +1,14 @@
+*, *:hover, *:focus {
+  outline: none;
+}
+* {
+  cursor: $cursor;
+}
+
+input, textarea, select {
+  font-family: inherit;
+}
+
 body {
   background: url("@/assets/bg.png") repeat center fixed $main-color;
   color: $accent-color;
@@ -6,7 +17,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   padding: 0;
   margin: 0;
-  cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABFklEQVRYR9WXURLDIAhE6/0PbSdOtUpcd1Gnpv1KGpTHBpCE1/cXq+vrMph7dGvXZTtpfW10DCA5jrH1H0Jhs5E0hnZdCR+vb5S8Nn8mQCeS9BdSalYJqMBjAGzq59xAESN7VFVUgV8AZB/dZBR7QTFDCqGquvUBVVoEtgIwpQRzmANSFHgWQKExHdIrPeuMvQNDarXe6nC/AutgV3JW+6bgqQLeV8FekRtgV+ToDKEKnACYKsfZjjkam7a0ZpYTytwmgainpC3HvwBocgKOxqRjehoR9DFKNFYtOwCGYCszobeCbl26N6yyQ6g8X/Wex/rBPsNEV6qAMaJPMynIHQCoSqS9JSMmwef51LflTgCRszU7DvAGiV6mHWfsaVUAAAAASUVORK5CYII=), auto;
+  button, input, select, textarea, a {
+    cursor: $cursor-pointer;
+  }
 
   #app {
     padding: 0;
@@ -14,12 +27,126 @@ body {
   }
 }
 
+/* Basics */
 .hover {
   :hover {
-    cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAzElEQVRYR+2X0Q6AIAhF5f8/2jYXZkwEjNSVvVUjDpcrGgT7FUkI2D9xRfQETwNIiWO85wfINfQUEyxBG2ArsLwC0jioGt5zFcwF4OYDPi/mBYKm4t0U8ATgRm3ThFoAqkhNgWkA0jJLvaOVSs7j3qMnSgXWBMiWPXe94QqMBMBc1VZIvaTu5u5pQewq0EqNZvIEMCmxAawK0DNkay9QmfFNAJUXfgGgUkLaE7j/h8fnASkxHTz0DGIBMCnBeeM7AArpUd3mz2x3C7wADglA8BcWMZhZAAAAAElFTkSuQmCC) 14 0,pointer;
+    cursor: $cursor-pointer;
   }
 }
 
+.input {
+  font-family: $font-secondary !important;
+  margin: 1rem 0;
+  width: 100%;
+
+  .element {
+    display: block;
+    border: none;
+    background-color: rgba($accent-color-dark, 0.4);
+    border-radius: $trapezoid;
+    width: 100%;
+    padding: 1rem 0.5rem;
+    font-size: 1.5rem;
+    color: #fff;
+    &:focus {
+      background-color: rgba($accent-color-dark, 0.9);
+    }
+  }
+  label {
+    color: $accent-color;
+    font-size: 0.8rem;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+  &.radio {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    &>label:first-child {
+      width: 100%;
+      color: $accent-color;
+      font-size: 0.8rem;
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    label {
+      display: inline;
+      font-size: 2rem;
+
+      input[type=radio] {
+        display: none;
+      }
+
+      &:not(:first-child) {
+        color: $accent-color-dark;
+        margin-top: 0.5rem;
+        font-family: $font-primary;
+        font-size: 1.4rem;
+        cursor: $cursor-pointer;
+
+        &:before {
+          content: '>';
+          opacity: 0;
+        }
+        
+        &.checked {
+          color: #fff;
+          text-shadow: 0 0 0.4rem rgba($accent-color-dark, 0.9);
+          &:before {
+            animation: 0.4s opacityHalf infinite;
+            opacity: 1;
+          }
+        }
+      }
+    }
+  }
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  border-radius: $trapezoid;
+  font-size: 2rem;
+  font-family: $font-primary;
+  padding: 0.5rem 1rem;
+  background-color: $accent-color;
+  border-color: $accent-color;
+  color: $main-color;
+  animation: 0.2s borderTrapezoid infinite;
+  transition: $transition;
+  box-shadow: 0 0.5rem 1rem rgba($accent-color, 0.2);
+  &:hover {
+    box-shadow: 0 0.5rem 1rem rgba($accent-color, 0.6);
+    background-color: $main-color;
+    color: $accent-color;
+  }
+  &:focus {
+    background-color: $main-color;
+    color: #fff;
+  }
+}
+
+.alert {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  margin: 1rem 0;
+  background-color: rgba($red-color, 0.3);
+  border: 0.2rem solid $red-color;
+  font-family: $font-secondary;
+  font-weight: 500;
+  text-shadow: 0.02rem 0.05rem 0 #000000;
+  border-radius: $trapezoid;
+  color: $red-color;
+}
+
+/* Progress */
 .progress {
   width: 100%;
   height: 3rem;
@@ -72,5 +199,216 @@ body {
   }
   &.opacity-down {
     animation: 0.8s opacityDown;
+  }
+}
+
+/* Start */
+.form {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  flex-wrap: nowrap;
+}
+
+/* Countdown */
+.counter {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  flex-wrap: nowrap;
+  font-size: 4rem;
+  color: #fff;
+  text-shadow: 0 0 1rem $accent-color;
+}
+
+/* Game */
+.game {
+  & > .row {
+    height: 33.3vh;
+    justify-content: center;
+    align-items: center;
+
+    &:first-child {
+      border-bottom: 0.5rem solid $accent-color-dark;
+      border-radius: $trapezoid;
+    }
+    &:nth-child(2) {
+      .col {
+        &:first-child {
+          border-right: 0.5rem solid $accent-color-dark;
+          border-radius: $trapezoid;
+        }
+        &:last-child {
+          border-left: 0.5rem solid $accent-color-dark;
+          border-radius: $trapezoid;
+        }
+      }
+    }
+    &:last-child {
+      border-top: 0.5rem solid $accent-color-dark;
+      border-radius: $trapezoid;
+    }
+  }
+  .cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    .game-card {
+      height: 8rem;
+      width: 5rem;
+      background: rgb(0, 0, 0);
+      box-shadow: 0 0 0.4rem #092522;
+      display: block;
+      transition: 0.1s ease-out;
+      border-radius: 0.5rem;
+      border: 2px solid #fff;
+      position: relative;
+      cursor: pointer;
+      font-family: $font-secondary;
+      animation: downToScene 1s;
+  
+      &:hover {
+        transform: rotateZ(-5deg) translateY(-20%);
+        box-shadow: 0 0 0.8rem #092522;
+      }
+      & + .game-card {
+        margin-left: -4rem;
+      }
+  
+      &:not(.rival)[data-card-type*="red"] {
+        background: $red-color;
+        color: #fff;
+      }
+      &:not(.rival)[data-card-type*="green"] {
+        background: $green-color;
+        color: #fff;
+      }
+      &:not(.rival)[data-card-type*="blue"] {
+        background: $blue-color;
+        color: #fff;
+      }
+      &:not(.rival)[data-card-type*="yellow"] {
+        background: $yellow-color;
+        color: #fff;
+      }
+      &:not(.rival)[data-card-type*="joker"] {
+        background: #000;
+        color: #fff;
+      }
+  
+      &:not(.rival)[data-card-type] {
+        &:before {
+          pointer-events: none;
+          position: absolute;
+          top: -0.1rem;
+          left: 0.2rem;
+          font-size: 1.2rem;
+        }
+        &:after {
+          pointer-events: none;
+          position: absolute;
+          top: 0rem;
+          left: 0rem;
+          bottom: 0rem;
+          right: 0rem;
+          font-size: 3rem;
+          display: flex;
+          flex-direction: column;
+          flex-wrap: nowrap;
+          align-content: center;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+  
+      &:not(.rival)[data-card-type*=":block"] {
+        &:before {
+          left: 0.1rem;
+          top: 0rem;
+          content: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDJDMTcuNSAyIDIyIDYuNSAyMiAxMlMxNy41IDIyIDEyIDIyIDIgMTcuNSAyIDEyIDYuNSAyIDEyIDJNMTIgNEMxMC4xIDQgOC40IDQuNiA3LjEgNS43TDE4LjMgMTYuOUMxOS4zIDE1LjUgMjAgMTMuOCAyMCAxMkMyMCA3LjYgMTYuNCA0IDEyIDRNMTYuOSAxOC4zTDUuNyA3LjFDNC42IDguNCA0IDEwLjEgNCAxMkM0IDE2LjQgNy42IDIwIDEyIDIwQzEzLjkgMjAgMTUuNiAxOS40IDE2LjkgMTguM1oiIC8+PC9zdmc+);
+        }
+        &:after {
+          transform: scale(2.5);
+          top: -1.5rem;
+          left: 0.2rem;
+          content: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDJDMTcuNSAyIDIyIDYuNSAyMiAxMlMxNy41IDIyIDEyIDIyIDIgMTcuNSAyIDEyIDYuNSAyIDEyIDJNMTIgNEMxMC4xIDQgOC40IDQuNiA3LjEgNS43TDE4LjMgMTYuOUMxOS4zIDE1LjUgMjAgMTMuOCAyMCAxMkMyMCA3LjYgMTYuNCA0IDEyIDRNMTYuOSAxOC4zTDUuNyA3LjFDNC42IDguNCA0IDEwLjEgNCAxMkM0IDE2LjQgNy42IDIwIDEyIDIwQzEzLjkgMjAgMTUuNiAxOS40IDE2LjkgMTguM1oiIC8+PC9zdmc+);
+        }
+      }
+  
+      &:not(.rival)[data-card-type*=":direction"] {
+        &:before {
+          transform: rotate(135deg);
+          left: -0.4rem;
+          top: -0.4rem;
+          content: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZmZmZiIgZD0iTTIxLDlMMTcsNVY4SDEwVjEwSDE3VjEzTTcsMTFMMywxNUw3LDE5VjE2SDE0VjE0SDdWMTFaIiAvPjwvc3ZnPg==);
+        }
+        &:after {
+          transform: rotate(135deg) scale(3);
+          top: 1.5rem;
+          left: 1.5rem;
+          content: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZmZmZiIgZD0iTTIxLDlMMTcsNVY4SDEwVjEwSDE3VjEzTTcsMTFMMywxNUw3LDE5VjE2SDE0VjE0SDdWMTFaIiAvPjwvc3ZnPg==);
+        }
+      }
+  
+      &:not(.rival)[data-card-type*=":color"] {
+        &:before {
+          content: '';
+          width: 1.5rem;
+          height: 1.5rem;
+          border-radius: 50%;
+          top: 0.2rem;
+          background: #fff;
+          background: linear-gradient(90deg, $red-color 0%, $red-color 25%, $green-color 25%, $green-color 50%, $blue-color 50%, $blue-color 75%, $yellow-color 75%, $yellow-color 100%);
+        }
+        &:after {
+          content: '';
+          width: 3rem;
+          height: 3rem;
+          top: 2.4rem;
+          left: 0.9rem;
+          border-radius: 50%;
+          background: #fff;
+          background: linear-gradient(90deg, $red-color 0%, $red-color 25%, $green-color 25%, $green-color 50%, $blue-color 50%, $blue-color 75%, $yellow-color 75%, $yellow-color 100%);
+        }
+      }
+  
+      &:not(.rival)[data-card-type*="+2"] {
+        &:before {
+          content: "+2"
+        }
+        &:after {
+          content: "+2";
+        }
+      }
+  
+      &:not(.rival)[data-card-type*="+4"] {
+        &:before {
+          content: "+4"
+        }
+        &:after {
+          content: "+4";
+        }
+      }
+  
+      @for $i from 0 through 9 {
+          &:not(.rival)[data-card-type*=":#{$i}"] {
+          &:before {
+            content: "#{$i}"
+          }
+          &:after {
+            content: "#{$i}";
+          }
+        }
+      }
+    }
   }
 }

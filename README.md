@@ -2,7 +2,7 @@
 
 # ABOUT VUNO
 
-VUNO; It is a game developed for hobby purposes with Vue.
+VUNO; It is a card game developed for hobby purposes with Vue.
 
 ## Credits
 

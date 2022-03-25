@@ -1,6 +1,7 @@
 <script>
 import Progress from "./Progress.vue"
 import Start from "./Start.vue"
+import Countdown from "./Countdown.vue"
 export default {
   data() {
     return {
@@ -55,7 +56,7 @@ export default {
     }
   },
   components: {
-    Progress, Start
+    Progress, Start, Countdown
   },
   methods: {
     /* Init game */
@@ -114,7 +115,6 @@ export default {
         })
         await new Promise(async (resolve) => {
           this.screen = 'game'
-          await this.triggergameArea()
           await this.dealCards()
           resolve(console.log("Visible game display..."))
         })
@@ -704,26 +704,11 @@ export default {
     pleaseWait (ms = 1000) {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
-    triggergameArea() {
-      return new Promise ((resolve) => {
-        setTimeout(() => {
-          let tooltips = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-          })
-          if (! this.colorModal) {
-            this.colorModal = new bootstrap.Modal(document.getElementById('colorModal'))
-          }
-          if (! this.finishModal) {
-            this.finishModal = new bootstrap.Modal(document.getElementById('finishModal'))
-          }
-          resolve(console.log("Game Area DOM triggered..."))
-        })
-      })
-    },
     reloadPage () {
       window.location.reload()
     },
-    test () {
+    test (data) {
+      console.log(data)
     }
   },
   watch: {
@@ -769,9 +754,50 @@ export default {
 
       <!-- Start -->
       <Start v-if="screen === 'start'" 
-        :modelValue="{name: playerName, number: numberOfPlayer}" 
-        @update:modelValue="value => {playerName = value.name, numberOfPlayer = value.number}" />
+        @changed="(e) => { playerName = e._name, numberOfPlayer = e._number }"
+        @starting="startGame()"
+        :content="{_name: playerName, _number: numberOfPlayer}"  />
       <!-- /Start -->
+
+      <!-- Countdown -->
+      <Countdown v-if="screen === 'countdown'" :count="preparingSecond" />
+      <!-- /Countdown -->
+      
+      <div v-if="screen === 'game'" class="col-12 game">
+        <div class="row">
+          <div class="col" v-if="orderRelation.top !== null">
+            <div class="cards">
+              <div v-for="(card, key) in getTopCards" :key="key" class="game-card rival" :data-card-type="card">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+           <div class="col" v-if="orderRelation.left !== null">
+              <div class="cards">
+                <div v-for="(card, key) in getLeftCards" :key="key" class="game-card rival" :data-card-type="card">
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              center
+            </div>
+            <div class="col" v-if="orderRelation.right !== null">
+              <div class="cards">
+                <div v-for="(card, key) in getRightCards" :key="key" class="game-card rival" :data-card-type="card">
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col" v-if="orderRelation.bottom !== null">
+            <div class="cards">
+                <div v-for="(card, key) in getBottomCards" :key="key" class="game-card" :data-card-type="card">
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
